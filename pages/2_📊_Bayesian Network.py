@@ -135,97 +135,97 @@ if selected == "Feature dan Split":
 
 if selected == "Model & Compute Conditional Probability Tables (CPT)":
 
-    # Struktur Pembelajaran menggunakan Hill Climb Search
-    from pgmpy.estimators import HillClimbSearch, BicScore
+    # # Struktur Pembelajaran menggunakan Hill Climb Search
+    # from pgmpy.estimators import HillClimbSearch, BicScore
     
-    hc = HillClimbSearch(data)  # Gunakan data train
-    best_model = hc.estimate(scoring_method=BicScore(data))
+    # hc = HillClimbSearch(data)  # Gunakan data train
+    # best_model = hc.estimate(scoring_method=BicScore(data))
     
-    # Menampilkan struktur jaringan (edges)
-    print("\nEdges Struktur Bayesian Network yang Dipelajari:\n", best_model.edges())
+    # # Menampilkan struktur jaringan (edges)
+    # print("\nEdges Struktur Bayesian Network yang Dipelajari:\n", best_model.edges())
         
-    import networkx as nx
-    import matplotlib.pyplot as plt
-    from pgmpy.estimators import HillClimbSearch, BicScore
-    import pandas as pd  # Pastikan Anda sudah mengimpor pandas
+    # import networkx as nx
+    # import matplotlib.pyplot as plt
+    # from pgmpy.estimators import HillClimbSearch, BicScore
+    # import pandas as pd  # Pastikan Anda sudah mengimpor pandas
     
-    # Asumsikan 'data' adalah DataFrame Anda
-    hc = HillClimbSearch(data)
-    best_model = hc.estimate(scoring_method=BicScore(data))
+    # # Asumsikan 'data' adalah DataFrame Anda
+    # hc = HillClimbSearch(data)
+    # best_model = hc.estimate(scoring_method=BicScore(data))
     
-    # Dapatkan edges dari model yang dipelajari
-    edges = best_model.edges()
+    # # Dapatkan edges dari model yang dipelajari
+    # edges = best_model.edges()
     
-    # Buat graph networkx
-    graph = nx.DiGraph(edges)
+    # # Buat graph networkx
+    # graph = nx.DiGraph(edges)
     
-    # Tentukan posisi node untuk visualisasi (bisa disesuaikan)
-    pos = nx.spring_layout(graph)  # Atau nx.circular_layout(graph), nx.kamada_kawai_layout(graph), dll.
+    # # Tentukan posisi node untuk visualisasi (bisa disesuaikan)
+    # pos = nx.spring_layout(graph)  # Atau nx.circular_layout(graph), nx.kamada_kawai_layout(graph), dll.
     
-    # Gambar graph
-    plt.figure(figsize=(12, 8))
-    nx.draw(graph, pos, with_labels=True, node_size=3000, node_color='skyblue',
-            font_size=10, font_weight='bold', arrowsize=20)
-    plt.title("Struktur Bayesian Network yang Dipelajari (Hill Climb)", fontsize=14)
-    plt.show()
+    # # Gambar graph
+    # plt.figure(figsize=(12, 8))
+    # nx.draw(graph, pos, with_labels=True, node_size=3000, node_color='skyblue',
+    #         font_size=10, font_weight='bold', arrowsize=20)
+    # plt.title("Struktur Bayesian Network yang Dipelajari (Hill Climb)", fontsize=14)
+    # plt.show()
 
-    # Membuat model Bayesian Network dengan struktur yang dipelajari
-    model_bn = BayesianNetwork(best_model.edges())
+    # # Membuat model Bayesian Network dengan struktur yang dipelajari
+    # model_bn = BayesianNetwork(best_model.edges())
     
-    # Estimasi parameter CPT (Conditional Probability Tables) dengan Bayesian Estimator
-    model_bn.fit(data, estimator=BayesianEstimator, prior_type='BDeu', equivalent_sample_size=5)
+    # # Estimasi parameter CPT (Conditional Probability Tables) dengan Bayesian Estimator
+    # model_bn.fit(data, estimator=BayesianEstimator, prior_type='BDeu', equivalent_sample_size=5)
     
-    # Tampilkan struktur CPT untuk setiap node
-    for cpt in model_bn.get_cpds():
-        st.write(cpt)
+    # # Tampilkan struktur CPT untuk setiap node
+    # for cpt in model_bn.get_cpds():
+    #     st.write(cpt)
     
-    # edges_bn = st.session_state.edges_bn
-    # # --- 1. Ambil semua node unik dari edges ---
-    # nodes_in_edges = set()
-    # for parent, child in edges_bn:
-    #     nodes_in_edges.add(parent)
-    #     nodes_in_edges.add(child)
+    edges_bn = st.session_state.edges_bn
+    # --- 1. Ambil semua node unik dari edges ---
+    nodes_in_edges = set()
+    for parent, child in edges_bn:
+        nodes_in_edges.add(parent)
+        nodes_in_edges.add(child)
 
-    # # --- 2. Buat list kolom yang mau disimpan ---  
-    # columns_to_keep = list(nodes_in_edges)
+    # --- 2. Buat list kolom yang mau disimpan ---  
+    columns_to_keep = list(nodes_in_edges)
 
-    # # --- 3. Pisahkan fitur & target dari data_bn ---
-    # # Target variabel yang akan diprediksi
-    # target_bn = ["GPA_Disc", "GradeClass"]
+    # --- 3. Pisahkan fitur & target dari data_bn ---
+    # Target variabel yang akan diprediksi
+    target_bn = ["GPA_Disc", "GradeClass"]
 
-    # # Fitur berdasarkan edges_bn (drop target supaya tidak bocor)
-    # features_bn = data_bn[columns_to_keep].drop(columns=target_bn)
+    # Fitur berdasarkan edges_bn (drop target supaya tidak bocor)
+    features_bn = data_bn[columns_to_keep].drop(columns=target_bn)
 
-    # # Target (label)
-    # target_data = data_bn[target_bn]
+    # Target (label)
+    target_data = data_bn[target_bn]
 
-    # # --- 4. Split data menjadi training dan testing ---
-    # train_features, test_features, train_target, test_target = train_test_split(
-    # features_bn,
-    # target_data,
-    # test_size=0.2,
-    # random_state=42,
-    # stratify=data_bn['GradeClass'] # bisa juga stratify ke GPA_Disc atau GradeClass, pilih sesuai target utama
-    # )
+    # --- 4. Split data menjadi training dan testing ---
+    train_features, test_features, train_target, test_target = train_test_split(
+    features_bn,
+    target_data,
+    test_size=0.2,
+    random_state=42,
+    stratify=data_bn['GradeClass'] # bisa juga stratify ke GPA_Disc atau GradeClass, pilih sesuai target utama
+    )
 
-    # # Gabungkan fitur dan target jadi satu dataframe
-    # train_data_bn = train_features.copy()
-    # train_data_bn['GPA_Disc'] = train_target['GPA_Disc']
-    # train_data_bn['GradeClass'] = train_target['GradeClass']
+    # Gabungkan fitur dan target jadi satu dataframe
+    train_data_bn = train_features.copy()
+    train_data_bn['GPA_Disc'] = train_target['GPA_Disc']
+    train_data_bn['GradeClass'] = train_target['GradeClass']
 
-    # test_data_bn = test_features.copy()
-    # test_data_bn['GPA_Disc'] = test_target['GPA_Disc']
-    # test_data_bn['GradeClass'] = test_target['GradeClass']
+    test_data_bn = test_features.copy()
+    test_data_bn['GPA_Disc'] = test_target['GPA_Disc']
+    test_data_bn['GradeClass'] = test_target['GradeClass']
 
 
-    # # Membuat model jaringan
-    # model_bn = BayesianNetwork(edges_bn)
+    # Membuat model jaringan
+    model_bn = BayesianNetwork(edges_bn)
 
-    # # Estimasi parameter (CPT) dengan menggunakan data training
-    # # Menggunakan estimator BayesianEstimator karena kita bisa mengatur prior
-    # model_bn.fit(train_data_bn, estimator=BayesianEstimator, prior_type='BDeu', equivalent_sample_size=5)
+    # Estimasi parameter (CPT) dengan menggunakan data training
+    # Menggunakan estimator BayesianEstimator karena kita bisa mengatur prior
+    model_bn.fit(train_data_bn, estimator=BayesianEstimator, prior_type='BDeu', equivalent_sample_size=5)
 
-    # # --- Menampilkan CPT untuk setiap variabel dalam jaringan ---
-    # for cpd in model_bn.get_cpds():
-    #     st.write(f"\nCPT untuk {cpd.variable}:")
-    #     st.write(cpd)
+    # --- Menampilkan CPT untuk setiap variabel dalam jaringan ---
+    for cpd in model_bn.get_cpds():
+        st.write(f"\nCPT untuk {cpd.variable}:")
+        st.write(cpd)
