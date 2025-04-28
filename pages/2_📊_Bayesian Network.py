@@ -177,7 +177,7 @@ if selected == "Model & Compute Conditional Probability Tables (CPT)":
     
     # Tampilkan struktur CPT untuk setiap node
     for cpt in model_bn.get_cpds():
-    st.write(cpt)
+        st.write(cpt)
     
     # edges_bn = st.session_state.edges_bn
     # # --- 1. Ambil semua node unik dari edges ---
