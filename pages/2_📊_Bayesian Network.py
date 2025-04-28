@@ -59,7 +59,7 @@ with st.sidebar:
 
 
 if selected == "Struktur Bayesian Network":
-    
+    st.write("Dataset")
     st.dataframe(data_bn.head())
     
     edges_bn = [
@@ -84,6 +84,7 @@ if selected == "Struktur Bayesian Network":
     nx.draw(model, pos=pos, with_labels=True, node_size=4000, node_color='skyblue',
             font_size=10, font_weight='bold', arrowsize=20)
     plt.title("Bayesian Network Structure for GPA Prediction (with Continuous Variables)", fontsize=14)
+    plt.tight_layout() 
     st.pyplot(plt)
     
 
