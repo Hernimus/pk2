@@ -239,6 +239,8 @@ if selected == "PREPROCESSING":
     
         st.dataframe(data_normalization[['Age', 'Absences', 'GPA_Disc' , 'StudyTimeWeekly_Disc']].nunique())
 
+        st.table(data_normalization[['Age', 'Absences', 'GPA_Disc' , 'StudyTimeWeekly_Disc']].describe())
+
 
     if sub_selected == "Analisis Korelasi": 
         # Salin dataframe
