@@ -4,6 +4,6 @@ streamlit
 matplotlib
 pandas
 scikit-learn
-pgmpy
-numpy
+pgmpy==0.1.21
+numpy==1.23.5
 streamlit-option-menu
