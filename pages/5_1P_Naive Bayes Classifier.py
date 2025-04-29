@@ -42,15 +42,23 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 import streamlit as st
 from streamlit_option_menu import option_menu
 
-st.set_page_config(
-    page_title="Model Penalaran Probabilistik",
-    page_icon="📊",
-    layout="wide"
-)
 
-data_nbc = st.session_state.data_normalization.copy()
+# Custom CSS for the hover effect
+st.markdown("""
+    <style>
+    .sidebar-link {
+        color: white;
+        text-decoration: none;
+        padding: 5px 0;
+        display: block;
+    }
+    .sidebar-link:hover {
+        color: red;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-# Create a sidebar with expandable sections
+# Create a sidebar with a subheader
 st.sidebar.subheader("Navigasi Model Naive Bayes")
 st.sidebar.write("Pilih bagian yang ingin dilihat:")
 
@@ -61,12 +69,10 @@ buttons = [
     ("Model GradeClass", "#grade-class")
 ]
 
-# Add the expandable links to the sidebar
+# Add the links to the sidebar with custom CSS
 for button_name, section in buttons:
-    with st.sidebar.expander(button_name, expanded=False):
-        st.markdown(f'''
-            <a href="{section}" style="color:white;text-decoration:none; transition: color 0.3s ease;" onmouseover="this.style.color='red'" onmouseout="this.style.color='white'">{button_name}</a>
-        ''', unsafe_allow_html=True)
+    st.sidebar.markdown(f'<a class="sidebar-link" href="{section}">{button_name}</a>', unsafe_allow_html=True)
+
 
 
 st.subheader("Dataset")
