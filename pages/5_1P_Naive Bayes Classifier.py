@@ -42,36 +42,65 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 import streamlit as st
 from streamlit_option_menu import option_menu
 
+st.set_page_config(
+ page_title="Model Penalaran Probabilistik",
+ page_icon="📊",
+ layout="wide"
+)
+ 
+data_nbc = st.session_state.data_normalization.copy()
 
-# Custom CSS for the hover effect
+
+
+# Custom CSS to ensure the link text is white and turns red when hovered
 st.markdown("""
     <style>
+    /* Style the sidebar links */
     .sidebar-link {
-        color: white;
+        color: white !important;
         text-decoration: none;
         padding: 5px 0;
         display: block;
     }
+    /* On hover, make the link text red */
     .sidebar-link:hover {
-        color: red;
+        color: red !important;
+    }
+
+    /* Style for the expandable sections */
+    .st-expander {
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        text-align: left;
+        padding: 0;
+        margin-bottom: 10px;
+    }
+
+    /* Style for the expanded content */
+    .st-expander-content {
+        padding-left: 20px;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Create a sidebar with a subheader
+# Sidebar with title and expandable sections
 st.sidebar.subheader("Navigasi Model Naive Bayes")
 st.sidebar.write("Pilih bagian yang ingin dilihat:")
 
-# Define the buttons in the sidebar for navigation
+# Define the expandable sections
 buttons = [
     ("Dataset", "#dataset"),
     ("Analisis Sensitivitas", "#analisis-sensitivitas"),
     ("Model GradeClass", "#grade-class")
 ]
 
-# Add the links to the sidebar with custom CSS
-for button_name, section in buttons:
-    st.sidebar.markdown(f'<a class="sidebar-link" href="{section}">{button_name}</a>', unsafe_allow_html=True)
+# Use a container to make sections expandable
+with st.sidebar:
+    for button_name, section in buttons:
+        with st.expander(button_name, expanded=False):  # Make it expandable
+            st.markdown(f'<a class="sidebar-link" href="{section}">{button_name}</a>', unsafe_allow_html=True)
+
 
 
 
