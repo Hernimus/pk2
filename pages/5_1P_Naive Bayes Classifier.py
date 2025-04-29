@@ -110,9 +110,9 @@ buttons = [
     ("Inferensi Probabilitas", "#inferensi-probabilitas"),
     ("Analisis Sensitivitas", "#analisis-sensitivitas"),
     ("Evaluasi Model", [
-        "#mean-absolute-error-mae-atau-root-mean-squared-error-rmse", 
-        "#evaluasi-untuk-gpa-disc-akurasi-presisi-recall", 
-        "#kalibrasi-probabilistik"
+        "MAE", "#mean-absolute-error-mae-atau-root-mean-squared-error-rmse", 
+        "Evaluasi untuk GPA_Disc", "#evaluasi-untuk-gpa-disc-akurasi-presisi-recall", 
+        "Evaluasi untuk GradeClass", "#kalibrasi-probabilistik"
     ]),
     ("Model GradeClass", "#grade-class")
 ]
