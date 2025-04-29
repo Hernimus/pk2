@@ -112,7 +112,7 @@ model_grade_class_nbc.fit(X_train_nbc, y_grade_class_train_nbc)
 # Streamlit display
 st.title('Model Probabilities')
 
-# Function to display the feature probability tables
+# Function to display the feature probability tables with cleaner formatting
 def display_probabilities(model, model_name):
     st.subheader(f"Tabel Probabilitas Fitur untuk {model_name}:")
 
@@ -128,14 +128,13 @@ def display_probabilities(model, model_name):
                 prob_data.append([f"Feature {idx}", f"Class {class_idx}", f"{prob:.4f}"])
 
     # Convert to DataFrame for better display
-    import pandas as pd
     prob_df = pd.DataFrame(prob_data, columns=["Feature", "Class", "Probability"])
-    st.table(prob_df)
+    
+    # Display the top N rows, for example, limit to first 10 rows
+    st.table(prob_df.head(10))  # Change 10 to any number for the desired row limit
 
 # Display GPA_Disc probabilities
 display_probabilities(model_gpa_disc_nbc, "GPA_Disc")
 
 # Display GradeClass probabilities
 display_probabilities(model_grade_class_nbc, "GradeClass")
-
-
