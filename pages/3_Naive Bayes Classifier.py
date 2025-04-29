@@ -138,12 +138,6 @@ st.write(f"Dimensi data uji: {X_test_nbc.shape}")
 # Pastikan kolom yang digunakan untuk prediksi sama antara latih dan uji
 assert X_train_nbc.shape[1] == X_test_nbc.shape[1], "Jumlah fitur pada data latih dan uji tidak sesuai!"
     
-    # Periksa jumlah kolom pada data latih dan uji
-    st.write(f"Dimensi data latih: {X_train_nbc.shape}")
-    st.write(f"Dimensi data uji: {X_test_nbc.shape}")
-    
-    # Pastikan kolom yang digunakan untuk prediksi sama antara latih dan uji
-    assert X_train_nbc.shape[1] == X_test_nbc.shape[1], "Jumlah fitur pada data latih dan uji tidak sesuai!"
 
 if selected == "Model":
     X_train_nbc = st.session_state.X_train_nbc
