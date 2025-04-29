@@ -86,7 +86,7 @@ if selected == "Struktur NBC":
     st.pyplot(plt)
 
 if selected == "Split Data":
-    feature_variables = st.session_state.feature_variables
+    feature_variables = st.session_state.feature_variables.copy()
     # Pisahkan fitur dan target untuk data latih dan data uji
     X_nbc = data_nbc[feature_variables]
     y_gpa_disc_nbc = data_nbc['GPA_Disc']
