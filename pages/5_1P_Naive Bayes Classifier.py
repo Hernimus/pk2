@@ -170,11 +170,11 @@ y_pred_gpa_disc_nbc = model_gpa_disc_nbc_inf.predict(X_test_nbc_transformed)
 y_pred_grade_class_nbc = model_grade_class_nbc_inf.predict(X_test_nbc_transformed)
 
 # Evaluasi model
-# st.write("\nAkurasi GPA_Disc:", accuracy_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
-# st.text(classification_report(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
+st.write("\nAkurasi GPA_Disc:", accuracy_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
+st.text(classification_report(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
 
-# st.write("\nAkurasi GradeClass:", accuracy_score(y_grade_class_test_nbc, y_pred_grade_class_nbc))
-# st.text(classification_report(y_grade_class_test_nbc, y_pred_grade_class_nbc))
+st.write("\nAkurasi GradeClass:", accuracy_score(y_grade_class_test_nbc, y_pred_grade_class_nbc))
+st.text(classification_report(y_grade_class_test_nbc, y_pred_grade_class_nbc))
 
 # Evaluasi model untuk GPA_Disc
 st.write("Evaluasi Model GPA_Disc")
