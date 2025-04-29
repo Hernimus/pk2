@@ -56,8 +56,8 @@ st.sidebar.write("Pilih bagian yang ingin dilihat:")
 
 # Define the buttons in the sidebar for navigation
 buttons = [
-    ("Analisis Sensitivitas", "#model-probabilities"),
-    ("Model GPA_Disc", "#gpa-disc"),
+    ("Dataset", "#dataset"),
+    ("Analisis Sensitivitas", "#analisis-sensitivitas"),
     ("Model GradeClass", "#grade-class")
 ]
 # Add the links to the sidebar
