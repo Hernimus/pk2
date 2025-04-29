@@ -54,6 +54,8 @@ data_nbc = st.session_state.data_normalization.copy()
 
 
 
+import streamlit as st
+
 # Apply the custom styles to the sidebar and links
 st.markdown("""
     <style>
@@ -83,6 +85,15 @@ st.markdown("""
     .st-expander-content {
         padding-left: 20px;
     }
+
+    /* Custom box style for Dataset */
+    .dataset-box {
+        border: 2px solid #888;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
     </style>
 """, unsafe_allow_html=True)
 
@@ -92,7 +103,7 @@ st.sidebar.write("Pilih bagian yang ingin dilihat:")
 
 # Define the expandable sections
 buttons = [
-    ("Dataset", "#dataset"),  # This one will not be a dropdown
+    ("Dataset", "#dataset"),  # This one will have a box around it
     ("Stuktur", "#struktur"),
     ("Split Data", "#split-data"),
     ("Inferensi Probabilitas", "#inferensi-probabilitas"),
@@ -108,12 +119,16 @@ buttons = [
 # Use a container to make sections expandable
 with st.sidebar:
     for button_name, section in buttons:
-        if isinstance(section, list):  # If the section contains multiple links
+        if button_name == "Dataset":
+            # Apply a custom box around the "Dataset" section
+            st.markdown(f'<div class="dataset-box"><a class="sidebar-link" href="{section}">{button_name}</a></div>', unsafe_allow_html=True)
+        elif isinstance(section, list):  # If the section contains multiple links
             with st.expander(button_name, expanded=False):
                 for link in section:
                     st.markdown(f'<a class="sidebar-link" href="{link}">{link}</a>', unsafe_allow_html=True)
         else:  # Single section link
             st.markdown(f'<a class="sidebar-link" href="{section}">{button_name}</a>', unsafe_allow_html=True)
+
 
 
 
