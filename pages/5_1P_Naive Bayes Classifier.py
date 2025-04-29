@@ -177,7 +177,7 @@ y_pred_grade_class_nbc = model_grade_class_nbc_inf.predict(X_test_nbc_transforme
 # st.text(classification_report(y_grade_class_test_nbc, y_pred_grade_class_nbc))
 
 # Evaluasi model untuk GPA_Disc
-st.subheader("Evaluasi Model GPA_Disc")
+st.write("Evaluasi Model GPA_Disc")
 st.metric("Akurasi GPA_Disc", f"{accuracy_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc):.4f}")
 
 st.write("Classification Report:")
@@ -185,7 +185,7 @@ report_gpa = classification_report(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc, out
 st.table(pd.DataFrame(report_gpa).transpose())
 
 # Evaluasi model untuk GradeClass
-st.subheader("Evaluasi Model GradeClass")
+st.write("Evaluasi Model GradeClass")
 st.metric("Akurasi GradeClass", f"{accuracy_score(y_grade_class_test_nbc, y_pred_grade_class_nbc):.4f}")
 
 st.write("Classification Report:")
