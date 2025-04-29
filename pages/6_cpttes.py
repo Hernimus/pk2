@@ -129,9 +129,9 @@ def display_probabilities(model, model_name):
 
     # Convert to DataFrame for better display
     prob_df = pd.DataFrame(prob_data, columns=["Feature", "Class", "Probability"])
-    
-    # Display the top N rows, for example, limit to first 10 rows
-    st.table(prob_df.head(10))  # Change 10 to any number for the desired row limit
+
+    # Display the full table without limiting the rows
+    st.table(prob_df)
 
 # Display GPA_Disc probabilities
 display_probabilities(model_gpa_disc_nbc, "GPA_Disc")
