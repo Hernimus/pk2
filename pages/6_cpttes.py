@@ -109,32 +109,31 @@ model_gpa_disc_nbc.fit(X_train_nbc, y_gpa_disc_train_nbc)
 model_grade_class_nbc = CategoricalNB()
 model_grade_class_nbc.fit(X_train_nbc, y_grade_class_train_nbc)
 
+
+
 # Streamlit display
 st.title('Model Probabilities')
-
-# Function to display the feature probability tables with cleaner formatting
-def display_probabilities(model, model_name):
-    st.subheader(f"Tabel Probabilitas Fitur untuk {model_name}:")
-
-    # Prepare data for display
-    prob_data = []
+# Function to display the full table of probabilities in Streamlit
+def print_probability_table(model, model_name):
+    st.write(f"### Tabel Probabilitas Fitur untuk {model_name}:")
+    
     for class_idx, class_log_prob in enumerate(model.feature_log_prob_):
-        class_probs = np.exp(class_log_prob)  # Convert log-prob to prob
-        for idx, prob in enumerate(class_probs):
-            if isinstance(prob, np.ndarray):
+        st.write(f"**Kelas {class_idx}:**")
+        probs = np.exp(class_log_prob)  # Convert log-prob to prob
+        
+        for idx, prob in enumerate(probs):
+            if isinstance(prob, np.ndarray):  # In case the feature is a multidimensional array
                 for cat_idx, p in enumerate(prob):
-                    prob_data.append([f"Feature {idx} - Category {cat_idx}", f"Class {class_idx}", f"{p:.4f}"])
+                    st.write(f"  **Feature {idx} - Category {cat_idx}:** Probabilitas: {p:.4f}")
             else:
-                prob_data.append([f"Feature {idx}", f"Class {class_idx}", f"{prob:.4f}"])
+                st.write(f"  **Feature {idx}:** Probabilitas: {prob:.4f}")
 
-    # Convert to DataFrame for better display
-    prob_df = pd.DataFrame(prob_data, columns=["Feature", "Class", "Probability"])
+# Streamlit UI setup
+st.title("Probabilitas Fitur untuk Model Naive Bayes")
 
-    # Display the full table without limiting the rows
-    st.table(prob_df)
+# Button to display GPA_Disc and GradeClass probabilities
+if st.button("Tampilkan Probabilitas untuk GPA_Disc"):
+    print_probability_table(model_gpa_disc_nbc, "GPA_Disc")
 
-# Display GPA_Disc probabilities
-display_probabilities(model_gpa_disc_nbc, "GPA_Disc")
-
-# Display GradeClass probabilities
-display_probabilities(model_grade_class_nbc, "GradeClass")
+if st.button("Tampilkan Probabilitas untuk GradeClass"):
+    print_probability_table(model_grade_class_nbc, "GradeClass")
