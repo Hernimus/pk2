@@ -126,10 +126,11 @@ with st.sidebar:
     for button_name, section in buttons:
         if isinstance(section, list):  # If the section contains multiple links
             with st.expander(button_name, expanded=False):
-                for link in section:
-                    st.markdown(f'<a class="sidebar-link" href="{link}">{link}</a>', unsafe_allow_html=True)
+                for link_name, link_url in section:
+                    st.markdown(f'<a class="sidebar-link" href="{link_url}">{link_name}</a>', unsafe_allow_html=True)
         else:  # Single section link (non-expanding buttons)
             st.markdown(f'<div class="sidebar-box"><a class="sidebar-link" href="{section}">{button_name}</a></div>', unsafe_allow_html=True)
+
 
 
 
