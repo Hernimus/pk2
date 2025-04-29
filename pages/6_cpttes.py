@@ -61,7 +61,9 @@ buttons = [
     ("Model GPA_Disc", "#gpa-disc"),
     ("Model GradeClass", "#grade-class")
 ]
-
+# Add the links to the sidebar
+for button_name, section in buttons:
+    st.sidebar.markdown(f"[{button_name}]({section})")
 
 st.write("Dataset")
 # Step awal ambil data
