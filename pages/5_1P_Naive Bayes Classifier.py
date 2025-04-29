@@ -122,25 +122,55 @@ model_grade_class_nbc = CategoricalNB()
 model_grade_class_nbc.fit(X_train_nbc, y_grade_class_train_nbc)
 
 # CPT untuk GPA_Disc
-st.write("Tabel Probabilitas Fitur untuk GPA_Disc:")
+print("Tabel Probabilitas Fitur untuk GPA_Disc:")
 for class_idx, class_log_prob in enumerate(model_gpa_disc_nbc.feature_log_prob_):
-    st.write(f"\nKelas {class_idx}:")
+    print(f"\nKelas {class_idx}:")
     probs = np.exp(class_log_prob)  # balik dari log-prob ke prob
     for idx, prob in enumerate(probs):
         if isinstance(prob, np.ndarray):
             for cat_idx, p in enumerate(prob):
-                st.write(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
+                print(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
         else:
-            st.write(f"  Feature {idx}: Probabilitas: {prob:.4f}")
+            print(f"  Feature {idx}: Probabilitas: {prob:.4f}")
 
 # CPT untuk GradeClass
-st.write("\nTabel Probabilitas Fitur untuk GradeClass:")
+print("\nTabel Probabilitas Fitur untuk GradeClass:")
 for class_idx, class_log_prob in enumerate(model_grade_class_nbc.feature_log_prob_):
-    st.write(f"\nKelas {class_idx}:")
+    print(f"\nKelas {class_idx}:")
     probs = np.exp(class_log_prob)
     for idx, prob in enumerate(probs):
         if isinstance(prob, np.ndarray):
             for cat_idx, p in enumerate(prob):
-                st.write(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
+                print(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
         else:
-            st.write(f"  Feature {idx}: Probabilitas: {prob:.4f}")
+            print(f"  Feature {idx}: Probabilitas: {prob:.4f}")
+
+# Hapus StudentID
+X_train_nbc = X_train_nbc.drop(columns=['StudentID'])
+X_test_nbc = X_test_nbc.drop(columns=['StudentID'])
+
+# Gunakan KBinsDiscretizer untuk mendiskritisasi (opsional sebenarnya, kalau mau)
+discretizer_nbc = KBinsDiscretizer(n_bins=5, encode='ordinal', strategy='uniform')
+
+# Transformasi semua fitur (tanpa StudentID)
+X_train_nbc_transformed = discretizer_nbc.fit_transform(X_train_nbc)
+X_test_nbc_transformed = discretizer_nbc.transform(X_test_nbc)
+
+# Model untuk GPA_Disc
+model_gpa_disc_nbc_inf = CategoricalNB()
+model_gpa_disc_nbc_inf.fit(X_train_nbc_transformed, y_gpa_disc_train_nbc)
+
+# Model untuk GradeClass
+model_grade_class_nbc_inf = CategoricalNB()
+model_grade_class_nbc_inf.fit(X_train_nbc_transformed, y_grade_class_train_nbc)
+
+# Prediksi untuk data uji
+y_pred_gpa_disc_nbc = model_gpa_disc_nbc_inf.predict(X_test_nbc_transformed)
+y_pred_grade_class_nbc = model_grade_class_nbc_inf.predict(X_test_nbc_transformed)
+
+# Evaluasi model
+st.write("\nAkurasi GPA_Disc:", accuracy_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
+st.write(classification_report(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
+
+st.write("\nAkurasi GradeClass:", accuracy_score(y_grade_class_test_nbc, y_pred_grade_class_nbc))
+st.write(classification_report(y_grade_class_test_nbc, y_pred_grade_class_nbc))
