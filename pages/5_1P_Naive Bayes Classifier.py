@@ -50,6 +50,20 @@ st.set_page_config(
 
 data_nbc = st.session_state.data_normalization.copy()
 
+# Create a sidebar with links (buttons) to different sections
+st.sidebar.subheader("Navigasi Model Naive Bayes")
+st.sidebar.write("Pilih bagian yang ingin dilihat:")
+
+# Define the buttons in the sidebar for navigation
+buttons = [
+    ("Analisis Sensitivitas", "#model-probabilities"),
+    ("Model GPA_Disc", "#gpa-disc"),
+    ("Model GradeClass", "#grade-class")
+]
+# Add the links to the sidebar
+for button_name, section in buttons:
+    st.sidebar.markdown(f"[{button_name}]({section})")
+
 
 st.subheader("Dataset")
 # Step awal ambil data
