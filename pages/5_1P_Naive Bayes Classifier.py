@@ -51,10 +51,12 @@ st.set_page_config(
 data_nbc = st.session_state.data_normalization.copy()
 
 
-st.write("Dataset")
+st.subheader("Dataset")
 # Step awal ambil data
 st.dataframe(data_nbc.head())
 
+
+st.subheader("Struktur")
 # Definisikan target
 target_variables = ['GPA_Disc', 'GradeClass']
 
@@ -77,7 +79,7 @@ plt.title("Struktur Naive Bayes Classifier (Semua Fitur ke Target)", fontsize=14
 plt.tight_layout()
 st.pyplot(plt)
 
-
+st.subheader("Split Data")
 # Pisahkan fitur dan target untuk data latih dan data uji
 X_nbc = data_nbc[feature_variables]
 y_gpa_disc_nbc = data_nbc['GPA_Disc']
