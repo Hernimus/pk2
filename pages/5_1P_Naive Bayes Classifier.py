@@ -80,7 +80,10 @@ st.markdown("""
 
     /* Style for the expanded content */
     .st-expander-content {
-        padding-left: 20px;
+        border: 1px solid #888;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
     }
 
     /* Custom box style for all non-expanding buttons */
@@ -269,6 +272,7 @@ st.subheader("Analisis Sensitivitas")
 plt.figure(figsize=(12,8))
 sns.heatmap(data_nbc.corr()[['GPA_Disc']].sort_values(by='GPA_Disc', ascending=False), annot=True, cmap="coolwarm")
 plt.title("Sensitivity Analysis: Korelasi Variabel terhadap GPA_Disc", fontsize=16)
+
 st.pyplot(plt)
 
 # Contoh eksperimen dengan berbagai prior
