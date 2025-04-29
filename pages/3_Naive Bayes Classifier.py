@@ -54,7 +54,7 @@ data_nbc = st.session_state.data_normalization.copy()
 with st.sidebar:
     selected = option_menu(
         menu_title="MODEL",
-        options=["Struktur NBC", "Split Data", "Model & Compute Conditional Probability Tables (CPT)", "Inferensi Probabilistik"],
+        options=["Struktur NBC", "Split Data", "Model", "Inferensi Probabilistik"],
     )
 
 
@@ -106,3 +106,13 @@ if selected == "Split Data":
     
     # Pastikan kolom yang digunakan untuk prediksi sama antara latih dan uji
     assert X_train_nbc.shape[1] == X_test_nbc.shape[1], "Jumlah fitur pada data latih dan uji tidak sesuai!"
+
+if selected == "Model":
+
+    # Model untuk GPA_Disc
+    model_gpa_disc_nbc = CategoricalNB()
+    model_gpa_disc_nbc.fit(X_train_nbc, y_gpa_disc_train_nbc)
+    
+    # Model untuk GradeClass
+    model_grade_class_nbc = CategoricalNB()
+    model_grade_class_nbc.fit(X_train_nbc, y_grade_class_train_nbc)
