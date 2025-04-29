@@ -52,7 +52,7 @@ data_nbc = st.session_state.data_normalization.copy()
 
 
 
-import streamlit as st
+
 
 # Apply the custom styles to the sidebar and links
 st.markdown("""
@@ -92,7 +92,7 @@ st.sidebar.write("Pilih bagian yang ingin dilihat:")
 
 # Define the expandable sections
 buttons = [
-    ("Dataset", "#dataset"),
+    ("Dataset", "#dataset"),  # This one will not be a dropdown
     ("Stuktur", "#struktur"),
     ("Split Data", "#split-data"),
     ("Inferensi Probabilitas", "#inferensi-probabilitas"),
@@ -113,8 +113,8 @@ with st.sidebar:
                 for link in section:
                     st.markdown(f'<a class="sidebar-link" href="{link}">{link}</a>', unsafe_allow_html=True)
         else:  # Single section link
-            with st.expander(button_name, expanded=False):
-                st.markdown(f'<a class="sidebar-link" href="{section}">{button_name}</a>', unsafe_allow_html=True)
+            st.markdown(f'<a class="sidebar-link" href="{section}">{button_name}</a>', unsafe_allow_html=True)
+
 
 
 
