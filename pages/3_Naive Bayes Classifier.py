@@ -54,7 +54,7 @@ data_nbc = st.session_state.data_normalization.copy()
 with st.sidebar:
     selected = option_menu(
         menu_title="MODEL",
-        options=["Struktur NBC", "Split Data", "Model", "Inferensi Probabilistik"],
+        options=["Struktur NBC", "Split Data", "Model", "CPT"],
     )
 
 
@@ -139,3 +139,30 @@ if selected == "Model":
     model_grade_class_nbc.fit(X_train_nbc, y_grade_class_train_nbc)
 
     st.write(model_gpa_disc_nbc.fit)
+
+if selected == "CPT":
+    # CPT untuk GPA_Disc
+    print("Tabel Probabilitas Fitur untuk GPA_Disc:")
+    for class_idx, class_log_prob in enumerate(model_gpa_disc_nbc.feature_log_prob_):
+        print(f"\nKelas {class_idx}:")
+        probs = np.exp(class_log_prob)  # balik dari log-prob ke prob
+        for idx, prob in enumerate(probs):
+            if isinstance(prob, np.ndarray):
+                for cat_idx, p in enumerate(prob):
+                    print(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
+            else:
+                print(f"  Feature {idx}: Probabilitas: {prob:.4f}")
+    
+    # CPT untuk GradeClass
+    print("\nTabel Probabilitas Fitur untuk GradeClass:")
+    for class_idx, class_log_prob in enumerate(model_grade_class_nbc.feature_log_prob_):
+        print(f"\nKelas {class_idx}:")
+        probs = np.exp(class_log_prob)
+        for idx, prob in enumerate(probs):
+            if isinstance(prob, np.ndarray):
+                for cat_idx, p in enumerate(prob):
+                    print(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
+            else:
+                print(f"  Feature {idx}: Probabilitas: {prob:.4f}")
+
+    
