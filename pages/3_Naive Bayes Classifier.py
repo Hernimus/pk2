@@ -84,7 +84,7 @@ if selected == "Struktur NBC":
     plt.tight_layout()
     st.pyplot(plt)
 
-if selected == "Split Data"
+if selected == "Split Data":
     # Pisahkan fitur dan target untuk data latih dan data uji
     X_nbc = data_nbc[feature_variables]
     y_gpa_disc_nbc = data_nbc['GPA_Disc']
