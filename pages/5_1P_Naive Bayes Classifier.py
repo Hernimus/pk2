@@ -300,33 +300,19 @@ st.subheader("k-fold Cross-validation")
 from sklearn.model_selection import cross_val_score, KFold
 from sklearn.naive_bayes import CategoricalNB
 
-# Set up KFold
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
 
 # GPA_Disc prediction
 model_gpa_disc_cv = CategoricalNB()
 scores_gpa_disc = cross_val_score(model_gpa_disc_cv, X_nbc, y_gpa_disc_nbc, cv=kf, scoring='neg_mean_absolute_error')
-mae_score = -scores_gpa_disc.mean()
-mae_std = scores_gpa_disc.std()
 
 # GradeClass prediction
 model_grade_class_cv = CategoricalNB()
 scores_grade_class = cross_val_score(model_grade_class_cv, X_nbc, y_grade_class_nbc, cv=kf, scoring='accuracy')
-accuracy_score = scores_grade_class.mean()
-accuracy_std = scores_grade_class.std()
 
-# Display results using st.metric
-st.metric(
-    label="GPA_Disc Prediction (MAE)", 
-    value=f"{mae_score:.2f}", 
-    delta=f"± {mae_std:.2f}"
-)
+st.write(f"Cross-Validation MAE GPA_Disc (NBC): {-scores_gpa_disc.mean():.2f} ± {scores_gpa_disc.std():.2f}")
+st.write(f"Cross-Validation Accuracy GradeClass (NBC): {scores_grade_class.mean():.2f} ± {scores_grade_class.std():.2f}")
 
-st.metric(
-    label="GradeClass Prediction (Accuracy)", 
-    value=f"{accuracy_score:.2%}",  # Display as percentage
-    delta=f"± {accuracy_std:.2%}"   # Display as percentage
-)
 
 st.subheader("Sensitivity analysis")
 import matplotlib.pyplot as plt
@@ -390,3 +376,140 @@ give_recommendations(gpa_disc_results, 'alpha (GPA_Disc)')
 grade_class_results = list(zip(alphas, results_accuracy))
 give_recommendations(grade_class_results, 'alpha (GradeClass)')
 
+st.subheader("Comparison dengan baseline models")
+import streamlit as st
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import CategoricalNB
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, mean_absolute_error, mean_squared_error
+
+# --- Set up Streamlit page ---
+st.set_page_config(layout="wide")
+st.title("Model Performance Comparison")
+
+# --- Fungsi untuk Training dan Evaluasi ---
+def train_and_evaluate_regression(model, X_train, y_train, X_test, y_test):
+    model.fit(X_train, y_train)
+    predictions = model.predict(X_test)
+    mae = mean_absolute_error(y_test, predictions)
+    rmse = np.sqrt(mean_squared_error(y_test, predictions))
+    return mae, rmse
+
+def train_and_evaluate_classification(model, X_train, y_train, X_test, y_test):
+    model.fit(X_train, y_train)
+    predictions = model.predict(X_test)
+    accuracy = accuracy_score(y_test, predictions)
+    precision = precision_score(y_test, predictions, average='weighted')
+    recall = recall_score(y_test, predictions, average='weighted')
+    f1 = f1_score(y_test, predictions, average='weighted')
+    return accuracy, precision, recall, f1
+
+# --- Model Training Section ---
+with st.spinner("Training models..."):
+    # --- Model Baseline: Linear Regression (untuk GPA_Disc) ---
+    lr_model = LinearRegression()
+    mae_lr, rmse_lr = train_and_evaluate_regression(lr_model, X_train_nbc_transformed, y_gpa_disc_train_nbc, X_test_nbc_transformed, y_gpa_disc_test_nbc)
+
+    # --- Model Baseline: Random Forest (untuk GradeClass) ---
+    rf_model = RandomForestClassifier(random_state=42)
+    accuracy_rf, precision_rf, recall_rf, f1_rf = train_and_evaluate_classification(rf_model, X_train_nbc_transformed, y_grade_class_train_nbc, X_test_nbc_transformed, y_grade_class_test_nbc)
+
+    # --- Model Naive Bayes (CategoricalNB) untuk GPA_Disc ---
+    nbc_gpa_model = CategoricalNB()
+    mae_nbc_gpa, rmse_nbc_gpa = train_and_evaluate_regression(nbc_gpa_model, X_train_nbc_transformed, y_gpa_disc_train_nbc, X_test_nbc_transformed, y_gpa_disc_test_nbc)
+
+    # --- Model Naive Bayes (CategoricalNB) untuk GradeClass ---
+    nbc_grade_model = CategoricalNB()
+    accuracy_nbc_grade, precision_nbc_grade, recall_nbc_grade, f1_nbc_grade = train_and_evaluate_classification(nbc_grade_model, X_train_nbc_transformed, y_grade_class_train_nbc, X_test_nbc_transformed, y_grade_class_test_nbc)
+
+# --- Display Metrics ---
+st.success("Model training completed!")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("Regression Models (GPA_Disc)")
+    st.metric("Linear Regression - MAE", f"{mae_lr:.2f}")
+    st.metric("Linear Regression - RMSE", f"{rmse_lr:.2f}")
+    st.metric("Naive Bayes - MAE", f"{mae_nbc_gpa:.2f}")
+    st.metric("Naive Bayes - RMSE", f"{rmse_nbc_gpa:.2f}")
+
+with col2:
+    st.subheader("Classification Models (GradeClass)")
+    st.metric("Random Forest - Accuracy", f"{accuracy_rf*100:.2f}%")
+    st.metric("Random Forest - F1-Score", f"{f1_rf:.4f}")
+    st.metric("Naive Bayes - Accuracy", f"{accuracy_nbc_grade*100:.2f}%")
+    st.metric("Naive Bayes - F1-Score", f"{f1_nbc_grade:.4f}")
+
+# --- Visualisasi MAE dan RMSE untuk GPA_Disc ---
+st.subheader("Regression Performance Comparison")
+fig1, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+# MAE plot
+ax1.bar(['Linear Regression', 'Naive Bayes'], [mae_lr, mae_nbc_gpa], color=['blue', 'green'])
+ax1.set_ylabel('Mean Absolute Error (MAE)')
+ax1.set_title('MAE Comparison for GPA_Disc')
+
+# RMSE plot
+ax2.bar(['Linear Regression', 'Naive Bayes'], [rmse_lr, rmse_nbc_gpa], color=['blue', 'green'])
+ax2.set_ylabel('Root Mean Squared Error (RMSE)')
+ax2.set_title('RMSE Comparison for GPA_Disc')
+
+st.pyplot(fig1)
+
+# --- Visualisasi Classification Metrics untuk GradeClass ---
+st.subheader("Classification Performance Comparison")
+fig2, ax = plt.subplots(figsize=(12, 6))
+
+labels = ['Random Forest', 'Naive Bayes']
+x = np.arange(len(labels))
+width = 0.2
+
+metrics = {
+    'Accuracy': [accuracy_rf, accuracy_nbc_grade],
+    'Precision': [precision_rf, precision_nbc_grade],
+    'Recall': [recall_rf, recall_nbc_grade],
+    'F1-Score': [f1_rf, f1_nbc_grade]
+}
+
+for i, (metric_name, values) in enumerate(metrics.items()):
+    ax.bar(x + i*width - width*1.5, values, width, label=metric_name)
+    
+    # Add value labels
+    for j, value in enumerate(values):
+        ax.text(x[j] + i*width - width*1.5, value + 0.01, f"{value:.2f}", 
+                ha='center', va='bottom')
+
+ax.set_xticks(x)
+ax.set_xticklabels(labels)
+ax.set_ylabel('Score')
+ax.set_title('Classification Metrics Comparison for GradeClass')
+ax.legend(loc='upper right', bbox_to_anchor=(1.15, 1))
+ax.set_ylim(0, 1.1)
+
+st.pyplot(fig2)
+
+# --- Detailed Metrics Table ---
+st.subheader("Detailed Metrics Table")
+
+classification_data = {
+    "Model": ["Random Forest", "Naive Bayes"],
+    "Accuracy": [accuracy_rf, accuracy_nbc_grade],
+    "Precision": [precision_rf, precision_nbc_grade],
+    "Recall": [recall_rf, recall_nbc_grade],
+    "F1-Score": [f1_rf, f1_nbc_grade]
+}
+
+regression_data = {
+    "Model": ["Linear Regression", "Naive Bayes"],
+    "MAE": [mae_lr, mae_nbc_gpa],
+    "RMSE": [rmse_lr, rmse_nbc_gpa]
+}
+
+st.write("**Classification Metrics:**")
+st.dataframe(classification_data)
+
+st.write("**Regression Metrics:**")
+st.dataframe(regression_data)
