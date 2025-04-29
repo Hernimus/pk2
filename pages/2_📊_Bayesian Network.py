@@ -134,45 +134,6 @@ if selected == "Feature dan Split":
     st.write(f"Fitur digunakan: {train_features.columns.tolist()}")
     st.write(f"Target: {train_target.columns.tolist()}")
 
-if selected == "Model & Compute Conditional Probability Tables (CPT)":
-    edges_bn = st.session_state.edges_bn
-    # --- 1. Ambil semua node unik dari edges ---
-    nodes_in_edges = set()
-    for parent, child in edges_bn:
-        nodes_in_edges.add(parent)
-        nodes_in_edges.add(child)
-    
-    # --- 2. Buat list kolom yang mau disimpan ---
-    columns_to_keep = list(nodes_in_edges)
-    
-    # --- 3. Pisahkan fitur & target dari data_bn ---
-    # Target variabel yang akan diprediksi
-    target_bn = ["GPA_Disc", "GradeClass"]
-    
-    # Fitur berdasarkan edges_bn (drop target supaya tidak bocor)
-    features_bn = data_bn[columns_to_keep].drop(columns=target_bn)
-    
-    # Target (label)
-    target_data = data_bn[target_bn]
-    
-    # --- 4. Split data menjadi training dan testing ---
-    train_features, test_features, train_target, test_target = train_test_split(
-        features_bn,
-        target_data,
-        test_size=0.2,
-        random_state=42,
-        stratify=data_bn['GradeClass'] # bisa juga stratify ke GPA_Disc atau GradeClass, pilih sesuai target utama
-    )
-    
-    # Gabungkan fitur dan target jadi satu dataframe
-    train_data_bn = train_features.copy()
-    train_data_bn['GPA_Disc'] = train_target['GPA_Disc']
-    train_data_bn['GradeClass'] = train_target['GradeClass']
-    
-    test_data_bn = test_features.copy()
-    test_data_bn['GPA_Disc'] = test_target['GPA_Disc']
-    test_data_bn['GradeClass'] = test_target['GradeClass']
-    
     # Membuat model jaringan
     model_bn = BayesianNetwork(edges_bn)
     
