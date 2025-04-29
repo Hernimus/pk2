@@ -51,6 +51,8 @@ st.set_page_config(
 data_nbc = st.session_state.data_normalization.copy()
 
 
+
+
 # Apply the custom styles to the sidebar and links
 st.markdown("""
     <style>
@@ -83,11 +85,11 @@ st.markdown("""
 
     /* Custom box style for all non-expanding buttons */
     .sidebar-box {
-        border: 2px solid #888;
+        border: 1px solid #888;  /* Thinner border */
         border-radius: 5px;
         padding: 10px;
         margin-bottom: 10px;
-        background-color: #333; /* Optional: Change the background color */
+        background-color: transparent;  /* Transparent background */
     }
 
     </style>
@@ -121,6 +123,7 @@ with st.sidebar:
                     st.markdown(f'<a class="sidebar-link" href="{link}">{link}</a>', unsafe_allow_html=True)
         else:  # Single section link (non-expanding buttons)
             st.markdown(f'<div class="sidebar-box"><a class="sidebar-link" href="{section}">{button_name}</a></div>', unsafe_allow_html=True)
+
 
 
 
