@@ -170,10 +170,10 @@ y_pred_grade_class_nbc = model_grade_class_nbc_inf.predict(X_test_nbc_transforme
 
 # Evaluasi model
 st.write("\nAkurasi GPA_Disc:", accuracy_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
-st.dataframe(classification_report(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
+st.text(classification_report(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
 
 st.write("\nAkurasi GradeClass:", accuracy_score(y_grade_class_test_nbc, y_pred_grade_class_nbc))
-st.dataframe(classification_report(y_grade_class_test_nbc, y_pred_grade_class_nbc))
+st.text(classification_report(y_grade_class_test_nbc, y_pred_grade_class_nbc))
 
 plt.figure(figsize=(12,8))
 sns.heatmap(data_nbc.corr()[['GPA_Disc']].sort_values(by='GPA_Disc', ascending=False), annot=True, cmap="coolwarm")
