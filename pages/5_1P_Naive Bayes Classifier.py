@@ -145,6 +145,7 @@ for class_idx, class_log_prob in enumerate(model_grade_class_nbc.feature_log_pro
         else:
             print(f"  Feature {idx}: Probabilitas: {prob:.4f}")
 
+st.subheader("Inferensi Probabilitas")
 # Hapus StudentID
 X_train_nbc = X_train_nbc.drop(columns=['StudentID'])
 X_test_nbc = X_test_nbc.drop(columns=['StudentID'])
@@ -169,11 +170,29 @@ y_pred_gpa_disc_nbc = model_gpa_disc_nbc_inf.predict(X_test_nbc_transformed)
 y_pred_grade_class_nbc = model_grade_class_nbc_inf.predict(X_test_nbc_transformed)
 
 # Evaluasi model
-st.write("\nAkurasi GPA_Disc:", accuracy_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
-st.text(classification_report(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
+# st.write("\nAkurasi GPA_Disc:", accuracy_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
+# st.text(classification_report(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
 
-st.write("\nAkurasi GradeClass:", accuracy_score(y_grade_class_test_nbc, y_pred_grade_class_nbc))
-st.text(classification_report(y_grade_class_test_nbc, y_pred_grade_class_nbc))
+# st.write("\nAkurasi GradeClass:", accuracy_score(y_grade_class_test_nbc, y_pred_grade_class_nbc))
+# st.text(classification_report(y_grade_class_test_nbc, y_pred_grade_class_nbc))
+
+# Evaluasi model untuk GPA_Disc
+st.subheader("Evaluasi Model GPA_Disc")
+st.metric("Akurasi GPA_Disc", f"{accuracy_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc):.4f}")
+
+st.write("Classification Report:")
+report_gpa = classification_report(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc, output_dict=True)
+st.table(pd.DataFrame(report_gpa).transpose())
+
+# Evaluasi model untuk GradeClass
+st.subheader("Evaluasi Model GradeClass")
+st.metric("Akurasi GradeClass", f"{accuracy_score(y_grade_class_test_nbc, y_pred_grade_class_nbc):.4f}")
+
+st.write("Classification Report:")
+report_grade = classification_report(y_grade_class_test_nbc, y_pred_grade_class_nbc, output_dict=True)
+st.table(pd.DataFrame(report_grade).transpose())
+
+st.markdown("---")
 
 plt.figure(figsize=(12,8))
 sns.heatmap(data_nbc.corr()[['GPA_Disc']].sort_values(by='GPA_Disc', ascending=False), annot=True, cmap="coolwarm")
