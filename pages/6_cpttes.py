@@ -110,17 +110,6 @@ model_gpa_disc_nbc.fit(X_train_nbc, y_gpa_disc_train_nbc)
 model_grade_class_nbc = CategoricalNB()
 model_grade_class_nbc.fit(X_train_nbc, y_grade_class_train_nbc)
 
-st.write(model_gpa_disc_nbc.fit)
-
-
-# Model untuk GPA_Disc
-model_gpa_disc_nbc = CategoricalNB()
-model_gpa_disc_nbc.fit(X_train_nbc, y_gpa_disc_train_nbc)
-
-# Model untuk GradeClass
-model_grade_class_nbc = CategoricalNB()
-model_grade_class_nbc.fit(X_train_nbc, y_grade_class_train_nbc)
-
 # CPT untuk GPA_Disc
 print("Tabel Probabilitas Fitur untuk GPA_Disc:")
 
