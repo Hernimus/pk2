@@ -154,27 +154,27 @@ if selected == "CPT":
     model_grade_class_nbc.fit(X_train_nbc, y_grade_class_train_nbc)
     
    # CPT untuk GPA_Disc
-    st.write("### Tabel Probabilitas Fitur untuk GPA_Disc:")
+    st.write("Tabel Probabilitas Fitur untuk GPA_Disc:")
     for class_idx, class_log_prob in enumerate(model_gpa_disc_nbc.feature_log_prob_):
-        st.write(f"\n**Kelas {class_idx}:**")
+        st.write(f"\nKelas {class_idx}:")
         probs = np.exp(class_log_prob)  # balik dari log-prob ke prob
         for idx, prob in enumerate(probs):
             if isinstance(prob, np.ndarray):
                 for cat_idx, p in enumerate(prob):
-                    st.write(f"  - Fitur {idx} - Kategori {cat_idx}: Probabilitas: `{p:.4f}`")
+                    st.write(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
             else:
-                st.write(f"  - Fitur {idx}: Probabilitas: `{prob:.4f}`")
-        
+                st.write(f"  Feature {idx}: Probabilitas: {prob:.4f}")
+    
     # CPT untuk GradeClass
-    st.write("\n### Tabel Probabilitas Fitur untuk GradeClass:")
+    st.write("\nTabel Probabilitas Fitur untuk GradeClass:")
     for class_idx, class_log_prob in enumerate(model_grade_class_nbc.feature_log_prob_):
-        st.write(f"\n**Kelas {class_idx}:**")
+        st.write(f"\nKelas {class_idx}:")
         probs = np.exp(class_log_prob)
         for idx, prob in enumerate(probs):
             if isinstance(prob, np.ndarray):
                 for cat_idx, p in enumerate(prob):
-                    st.write(f"  - Fitur {idx} - Kategori {cat_idx}: Probabilitas: `{p:.4f}`")
+                    st.write(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
             else:
-                st.write(f"  - Fitur {idx}: Probabilitas: `{prob:.4f}`")
+                st.write(f"  Feature {idx}: Probabilitas: {prob:.4f}")
 
     
