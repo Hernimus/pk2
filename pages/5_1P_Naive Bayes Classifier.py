@@ -252,7 +252,7 @@ y_true_bin_grade_class_nbc = label_binarize(y_grade_class_test_nbc, classes=np.u
 auc_grade_class_nbc = roc_auc_score(y_true_bin_grade_class_nbc, y_prob_grade_class_nbc, average='macro', multi_class='ovr')
 st.write(f"AUC GradeClass (NBC): {auc_grade_class_nbc:.2f}")
 
-st.subheader("Kalibrasi Probabilistik")
+st.subheader("Kalibrasi Probabilistikaaaaaaaa")
 from sklearn.calibration import calibration_curve
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import label_binarize
