@@ -300,20 +300,33 @@ st.subheader("k-fold Cross-validation")
 from sklearn.model_selection import cross_val_score, KFold
 from sklearn.naive_bayes import CategoricalNB
 
-# Membuat KFold
+# Set up KFold
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
 
-# Evaluasi model untuk GPA_Disc
-st.header("Evaluasi Prediksi GPA_Disc")
+# GPA_Disc prediction
 model_gpa_disc_cv = CategoricalNB()
 scores_gpa_disc = cross_val_score(model_gpa_disc_cv, X_nbc, y_gpa_disc_nbc, cv=kf, scoring='neg_mean_absolute_error')
-st.write(f"Cross-Validation MAE GPA_Disc (NBC): {-scores_gpa_disc.mean():.2f} ± {scores_gpa_disc.std():.2f}")
+mae_score = -scores_gpa_disc.mean()
+mae_std = scores_gpa_disc.std()
 
-# Evaluasi model untuk GradeClass
-st.header("Evaluasi Prediksi GradeClass")
+# GradeClass prediction
 model_grade_class_cv = CategoricalNB()
 scores_grade_class = cross_val_score(model_grade_class_cv, X_nbc, y_grade_class_nbc, cv=kf, scoring='accuracy')
-st.write(f"Cross-Validation Accuracy GradeClass (NBC): {scores_grade_class.mean():.2f} ± {scores_grade_class.std():.2f}")
+accuracy_score = scores_grade_class.mean()
+accuracy_std = scores_grade_class.std()
+
+# Display results using st.metric
+st.metric(
+    label="GPA_Disc Prediction (MAE)", 
+    value=f"{mae_score:.2f}", 
+    delta=f"± {mae_std:.2f}"
+)
+
+st.metric(
+    label="GradeClass Prediction (Accuracy)", 
+    value=f"{accuracy_score:.2%}",  # Display as percentage
+    delta=f"± {accuracy_std:.2%}"   # Display as percentage
+)
 
 st.subheader("Sensitivity analysis")
 import matplotlib.pyplot as plt
