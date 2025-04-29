@@ -134,6 +134,7 @@ if selected == "Feature dan Split":
     st.write(f"Fitur digunakan: {train_features.columns.tolist()}")
     st.write(f"Target: {train_target.columns.tolist()}")
 
+if selected == "Model & Compute Conditional Probability Tables (CPT)":
     # Membuat model jaringan
     model_bn = BayesianNetwork(edges_bn)
     
