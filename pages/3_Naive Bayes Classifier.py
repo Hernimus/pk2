@@ -127,6 +127,9 @@ if selected == "Split Data":
 
 if selected == "Model":
     X_train_nbc = st.session_state.X_train_nbc
+    y_gpa_disc_train_nbc = st.session_state.y_gpa_disc_train_nbc
+    y_grade_class_train_nbc = st.session_state.y_grade_class_train_nbc
+    
     # Model untuk GPA_Disc
     model_gpa_disc_nbc = CategoricalNB()
     model_gpa_disc_nbc.fit(X_train_nbc, y_gpa_disc_train_nbc)
