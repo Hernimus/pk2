@@ -54,7 +54,7 @@ data_bn = st.session_state.data_normalization.copy()
 with st.sidebar:
     selected = option_menu(
         menu_title="MODEL",
-        options=["Struktur Bayesian Network", "Feature dan Split", "Model & Compute Conditional Probability Tables (CPT)", "Fitur Tambahan"],
+        options=["Struktur Bayesian Network", "Feature dan Split", "Model & Compute Conditional Probability Tables (CPT)", "Inferensi Probabilistik"],
     )
 
 
@@ -151,3 +151,37 @@ if selected == "Model & Compute Conditional Probability Tables (CPT)":
     for cpd in model_bn.get_cpds():
         st.write(f"\nCPT untuk {cpd.variable}:")
         st.write(cpd)
+
+if selected == "Inferensi Probabilistik":
+    edges_bn = st.session_state.edges_bn
+    model_bn = BayesianNetwork(edges_bn)
+    # Langkah 5: Lakukan inferensi dengan data test
+    inference = VariableElimination(model_bn)
+    
+    # Simpan hasil prediksi
+    predictions_gpa_disc = []
+    predictions_grade_class = []
+    
+    # Lakukan prediksi untuk setiap baris data di test_data_bn
+    for i in range(len(test_data_bn)):
+    # Pastikan hanya menggunakan fitur relevan (tanpa target)
+    evidence = test_data_bn.iloc[i].drop(['GPA_Disc', 'GradeClass'])
+
+    # Prediksi distribusi probabilitas untuk 'GPA_Disc'
+    gpa_disc_prob = inference.query(variables=['GPA_Disc'], evidence=evidence)
+    predictions_gpa_disc.append(gpa_disc_prob.values.argmax())  # Ambil nilai dengan probabilitas tertinggi
+
+    # Prediksi distribusi probabilitas untuk 'GradeClass'
+    grade_class_prob = inference.query(variables=['GradeClass'], evidence=evidence)
+    predictions_grade_class.append(grade_class_prob.values.argmax())  # Ambil nilai dengan probabilitas tertinggi
+    
+    # Ubah GradeClass jadi angka
+    true_gpa_disc = test_data_bn['GPA_Disc'].astype(int)
+    true_grade_class = test_data_bn['GradeClass'].astype(int)
+    
+    # Sekarang baru bisa hitung
+    gpa_disc_accuracy = accuracy_score(true_gpa_disc, predictions_gpa_disc)
+    grade_class_accuracy = accuracy_score(true_grade_class, predictions_grade_class)
+    
+    st.write(f"Akurasi Prediksi GPA_Disc: {gpa_disc_accuracy * 100:.2f}%")
+    st.write(f"Akurasi Prediksi GradeClass: {grade_class_accuracy * 100:.2f}%")
