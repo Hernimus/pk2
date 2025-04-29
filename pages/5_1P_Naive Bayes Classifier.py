@@ -112,14 +112,14 @@ buttons = [
     ("Evaluasi Model", [
         ("MAE", "#mean-absolute-error-mae-atau-root-mean-squared-error-rmse"), 
         ("Evaluasi untuk GPA_Disc", "#evaluasi-untuk-gpa-disc-akurasi-presisi-recall"), 
-        ("Evaluasi untuk GradeClass", "#kalibrasi-probabilistik")
+        ("Evaluasi untuk GradeClass", "#evaluasi-untuk-gradeclass-akurasi-presisi-recall-auc"),
+        ("Kalibrasi Probabilistik", "#kalibrasi-probabilistik"), 
     ]),
     ("Valiadasi", [
         ("k-fold Cross-validation", "#k-fold-cross-validation"),
         ("Sensitivity Analysis", "#sensitivity-analysis"), 
         ("Rekomendasi Peningkatan Performa", "#kemampuan-untuk-memberi-rekomendasi-peningkatan-performa"), 
-        ("Comparison dengan baseline models", "#comparison-dengan-baseline-models"),
-        ("Kalibrasi Probabilistik", "#kalibrasi-probabilistik"), 
+        ("Comparison dengan baseline models", "#comparison-dengan-baseline-models")
     ])
 ]
 
