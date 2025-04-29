@@ -122,28 +122,28 @@ model_grade_class_nbc = CategoricalNB()
 model_grade_class_nbc.fit(X_train_nbc, y_grade_class_train_nbc)
 
 # CPT untuk GPA_Disc
-print("Tabel Probabilitas Fitur untuk GPA_Disc:")
+st.write("Tabel Probabilitas Fitur untuk GPA_Disc:")
 for class_idx, class_log_prob in enumerate(model_gpa_disc_nbc.feature_log_prob_):
-    print(f"\nKelas {class_idx}:")
+    st.write(f"\nKelas {class_idx}:")
     probs = np.exp(class_log_prob)  # balik dari log-prob ke prob
     for idx, prob in enumerate(probs):
         if isinstance(prob, np.ndarray):
             for cat_idx, p in enumerate(prob):
-                print(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
+                st.write(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
         else:
-            print(f"  Feature {idx}: Probabilitas: {prob:.4f}")
+            st.write(f"  Feature {idx}: Probabilitas: {prob:.4f}")
 
 # CPT untuk GradeClass
-print("\nTabel Probabilitas Fitur untuk GradeClass:")
+st.write("\nTabel Probabilitas Fitur untuk GradeClass:")
 for class_idx, class_log_prob in enumerate(model_grade_class_nbc.feature_log_prob_):
-    print(f"\nKelas {class_idx}:")
+    st.write(f"\nKelas {class_idx}:")
     probs = np.exp(class_log_prob)
     for idx, prob in enumerate(probs):
         if isinstance(prob, np.ndarray):
             for cat_idx, p in enumerate(prob):
-                print(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
+                st.write(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
         else:
-            print(f"  Feature {idx}: Probabilitas: {prob:.4f}")
+            st.write(f"  Feature {idx}: Probabilitas: {prob:.4f}")
 
 st.subheader("Inferensi Probabilitas")
 # Hapus StudentID
@@ -195,71 +195,100 @@ for prior in prior_types:
 
 st.title("Evaluasi Model")
 st.subheader("Mean Absolute Error (MAE) atau Root Mean Squared Error (RMSE)")
-# Bagian evaluasi GPA (discretized)
-mae_gpa = mean_absolute_error(true_gpa_disc, predictions_gpa_disc)
-rmse_gpa = np.sqrt(mean_squared_error(true_gpa_disc, predictions_gpa_disc))
+from sklearn.metrics import mean_absolute_error, mean_squared_error, roc_auc_score, roc_curve
+from sklearn.preprocessing import label_binarize
+from sklearn.calibration import calibration_curve
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-st.write(f"MAE untuk GPA_Disc: {mae_gpa:.2f}")
-st.write(f"RMSE untuk GPA_Disc: {rmse_gpa:.2f}")
+# --- MAE dan RMSE untuk GPA_Disc ---
+mae_gpa_nbc = mean_absolute_error(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc)
+rmse_gpa_nbc = np.sqrt(mean_squared_error(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
 
-st.subheader("Akurasi, Presisi, Recall, AUC -> GradeClass")
-# Bagian evaluasi GradeClass
-accuracy_grade_class = accuracy_score(true_grade_class, predictions_grade_class)
-precision_grade_class = precision_score(true_grade_class, predictions_grade_class, average='weighted')
-recall_grade_class = recall_score(true_grade_class, predictions_grade_class, average='weighted')
+st.write(f"MAE GPA_Disc (NBC): {mae_gpa_nbc:.2f}")
+st.write(f"RMSE GPA_Disc (NBC): {rmse_gpa_nbc:.2f}")
 
-# Prediksi probabilitas (tetap sama)
-prob_grade_class = []
-for i in range(len(test_data_bn)):
-    evidence = test_data_bn.iloc[i].drop(['GPA_Disc', 'GradeClass'])
-    grade_class_prob = inference.query(variables=['GradeClass'], evidence=evidence)
-    prob_grade_class.append(grade_class_prob.values)
+# --- MAE dan RMSE untuk GradeClass ---
+# Menghitung MAE dan RMSE menggunakan prediksi dan nilai target untuk GradeClass
+mae_grade_class_nbc = mean_absolute_error(y_grade_class_test_nbc, y_pred_grade_class_nbc)
+rmse_grade_class_nbc = np.sqrt(mean_squared_error(y_grade_class_test_nbc, y_pred_grade_class_nbc))
 
-true_grade_class_bin = label_binarize(true_grade_class, classes=np.unique(true_grade_class))
-auc_grade_class = roc_auc_score(true_grade_class_bin, np.array(prob_grade_class), average='macro', multi_class='ovr')
+st.write(f"MAE GradeClass (NBC): {mae_grade_class_nbc:.2f}")
+st.write(f"RMSE GradeClass (NBC): {rmse_grade_class_nbc:.2f}")
 
-# Output Streamlit
-st.write(f"Akurasi Prediksi GradeClass: {accuracy_grade_class * 100:.2f}%")
-st.write(f"Presisi untuk GradeClass: {precision_grade_class * 100:.2f}%") 
-st.write(f"Recall untuk GradeClass: {recall_grade_class * 100:.2f}%")
-st.write(f"AUC untuk GradeClass: {auc_grade_class:.2f}")
+st.subheader("Evaluasi untuk GPA_Disc: Akurasi, Presisi, Recall")
+from sklearn.metrics import mean_absolute_error, mean_squared_error, accuracy_score, precision_score, recall_score
+import numpy as np
 
-st.subheader("Akurasi, Presisi, Recall, AUC -> GPA_Disc")
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+# --- Akurasi, Presisi, dan Recall untuk GPA_Disc ---
+accuracy_gpa_disc_nbc = accuracy_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc)
+precision_gpa_disc_nbc = precision_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc, average='weighted', labels=np.unique(y_pred_gpa_disc_nbc))
+recall_gpa_disc_nbc = recall_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc, average='weighted', labels=np.unique(y_pred_gpa_disc_nbc))
+
+st.write(f"Akurasi untuk GPA_Disc: {accuracy_gpa_disc_nbc:.4f}")
+st.write(f"Presisi untuk GPA_Disc: {precision_gpa_disc_nbc:.4f}")
+st.write(f"Recall untuk GPA_Disc: {recall_gpa_disc_nbc:.4f}")
+
+st.subheader("Evaluasi untuk GradeClass: Akurasi, Presisi, Recall, AUC")
+from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score
 from sklearn.preprocessing import label_binarize
 
-# --- 1. Evaluasi Akurasi, Precision, Recall, F1-Score untuk GPA_Disc --- #
-st.header("Evaluasi Klasifikasi GPA_Disc")
+# --- Akurasi, Presisi, dan Recall untuk GradeClass ---
+accuracy_grade_class_nbc = accuracy_score(y_grade_class_test_nbc, y_pred_grade_class_nbc)
+precision_grade_class_nbc = precision_score(y_grade_class_test_nbc, y_pred_grade_class_nbc, average='weighted')
+recall_grade_class_nbc = recall_score(y_grade_class_test_nbc, y_pred_grade_class_nbc, average='weighted')
 
-# Calculate metrics
-accuracy_gpa_disc = accuracy_score(true_gpa_disc, predictions_gpa_disc)
-precision_gpa_disc = precision_score(true_gpa_disc, predictions_gpa_disc, average='weighted')
-recall_gpa_disc = recall_score(true_gpa_disc, predictions_gpa_disc, average='weighted')
-f1_gpa_disc = f1_score(true_gpa_disc, predictions_gpa_disc, average='weighted')
+st.write(f"Akurasi untuk GradeClass: {accuracy_grade_class_nbc:.4f}")
+st.write(f"Presisi untuk GradeClass: {precision_grade_class_nbc:.4f}")
+st.write(f"Recall untuk GradeClass: {recall_grade_class_nbc:.4f}")
 
-# Display metrics in columns
-col1, col2 = st.columns(2)
-with col1:
-    st.metric("Akurasi", f"{accuracy_gpa_disc * 100:.2f}%")
-    st.metric("Presisi", f"{precision_gpa_disc * 100:.2f}%")
-with col2:
-    st.metric("Recall", f"{recall_gpa_disc * 100:.2f}%")
-    st.metric("F1-Score", f"{f1_gpa_disc * 100:.2f}%")
+# --- AUC untuk GradeClass ---
+y_prob_grade_class_nbc = model_grade_class_nbc_inf.predict_proba(X_test_nbc_transformed)
 
-# --- 2. AUC untuk Multi-Class --- #
-st.subheader("Evaluasi AUC untuk GPA_Disc")
+# Binarisasi label target untuk multi-class AUC
+y_true_bin_grade_class_nbc = label_binarize(y_grade_class_test_nbc, classes=np.unique(y_grade_class_test_nbc))
 
-# Calculate probabilities (keeping original calculation)
-prob_gpa_disc = []
-for i in range(len(test_data_bn)):
-    evidence = test_data_bn.iloc[i].drop(['GPA_Disc', 'GradeClass'])
-    gpa_disc_prob = inference.query(variables=['GPA_Disc'], evidence=evidence)
-    prob_gpa_disc.append(gpa_disc_prob.values)
+# Hitung AUC untuk multi-class
+auc_grade_class_nbc = roc_auc_score(y_true_bin_grade_class_nbc, y_prob_grade_class_nbc, average='macro', multi_class='ovr')
+st.write(f"AUC GradeClass (NBC): {auc_grade_class_nbc:.2f}")
 
-# Binarize labels and calculate AUC
-true_gpa_disc_bin = label_binarize(true_gpa_disc, classes=np.unique(true_gpa_disc))
-auc_gpa_disc = roc_auc_score(true_gpa_disc_bin, np.array(prob_gpa_disc), average='macro', multi_class='ovr')
+st.subheader("Kalibrasi Probabilistik")
+from sklearn.calibration import calibration_curve
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import label_binarize
 
-# Display AUC with progress bar
-st.metric("AUC Score", f"{auc_gpa_disc:.2f}")
-st.progress(float(auc_gpa_disc), text=f"Kualitas Model: {'Baik' if auc_gpa_disc > 0.7 else 'Cukup'}")
+# --- Kalibrasi Probabilistik ---
+plt.figure(figsize=(10, 6))
+for i in range(y_prob_grade_class_nbc.shape[1]):
+    prob_true, prob_pred = calibration_curve(y_true_bin_grade_class_nbc[:, i], y_prob_grade_class_nbc[:, i], n_bins=10)
+    plt.plot(prob_pred, prob_true, marker='o', label=f'Class {i}', color=plt.cm.jet(i / y_prob_grade_class_nbc.shape[1]))
+
+plt.plot([0, 1], [0, 1], linestyle='--', color='gray')
+plt.title('Calibration Curve Naive Bayes - GradeClass')
+plt.xlabel('Predicted Probability')
+plt.ylabel('True Probability')
+plt.legend()
+plt.grid()
+st.pyplot(plt)
+
+# Prediksi probabilitas untuk GPA_Disc
+y_prob_gpa_disc_nbc = model_gpa_disc_nbc_inf.predict_proba(X_test_nbc_transformed)
+# Binarize true labels for GPA_Disc
+y_true_bin_gpa_disc_nbc = label_binarize(y_gpa_disc_test_nbc, classes=np.unique(y_gpa_disc_test_nbc))
+
+# --- Kalibrasi Probabilistik untuk GPA_Disc ---
+plt.figure(figsize=(10, 6))
+
+# Untuk setiap kelas pada GPA_Disc, lakukan kalibrasi
+for i in range(y_prob_gpa_disc_nbc.shape[1]):
+    prob_true, prob_pred = calibration_curve(y_true_bin_gpa_disc_nbc[:, i], y_prob_gpa_disc_nbc[:, i], n_bins=10)
+    plt.plot(prob_pred, prob_true, marker='o', label=f'Class {i}', color=plt.cm.jet(i / y_prob_gpa_disc_nbc.shape[1]))
+
+# Plot diagonal referensi
+plt.plot([0, 1], [0, 1], linestyle='--', color='gray')
+plt.title('Calibration Curve Naive Bayes - GPA_Disc')
+plt.xlabel('Predicted Probability')
+plt.ylabel('True Probability')
+plt.legend()
+plt.grid()
+st.pyplot(plt)
+
