@@ -120,7 +120,7 @@ if selected == "Feature dan Split":
     )
 
     # Gabungkan fitur dan target jadi satu dataframe
-    st.session_state.train_data_bn = train_data_bn
+    
     train_data_bn = train_features.copy()
     train_data_bn['GPA_Disc'] = train_target['GPA_Disc']
     train_data_bn['GradeClass'] = train_target['GradeClass']
