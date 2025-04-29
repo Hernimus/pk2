@@ -50,7 +50,28 @@ st.set_page_config(
 
 data_nbc = st.session_state.data_normalization.copy()
 
-# Create a sidebar with links (buttons) to different sections
+# Custom CSS for styling the sidebar buttons
+st.markdown("""
+    <style>
+    .sidebar .sidebar-content a {
+        display: block;
+        padding: 10px 20px;
+        margin-bottom: 10px;
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        border-radius: 5px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .sidebar .sidebar-content a:hover {
+        background-color: #45a049;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Create a sidebar with links to different sections
 st.sidebar.subheader("Navigasi Model Naive Bayes")
 st.sidebar.write("Pilih bagian yang ingin dilihat:")
 
@@ -60,9 +81,10 @@ buttons = [
     ("Analisis Sensitivitas", "#analisis-sensitivitas"),
     ("Model GradeClass", "#grade-class")
 ]
-# Add the links to the sidebar
+
+# Add the links to the sidebar with custom styling
 for button_name, section in buttons:
-    st.sidebar.markdown(f"[{button_name}]({section})")
+    st.sidebar.markdown(f'<a href="{section}">{button_name}</a>', unsafe_allow_html=True)
 
 
 st.subheader("Dataset")
