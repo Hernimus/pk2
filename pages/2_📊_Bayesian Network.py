@@ -135,7 +135,7 @@ if selected == "Feature dan Split":
     st.write(f"Target: {train_target.columns.tolist()}")
 
 if selected == "Model & Compute Conditional Probability Tables (CPT)":
-
+    edges_bn = st.session_state.edges_bn
     # --- 1. Ambil semua node unik dari edges ---
     nodes_in_edges = set()
     for parent, child in edges_bn:
