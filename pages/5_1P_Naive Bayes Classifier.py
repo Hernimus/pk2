@@ -63,7 +63,7 @@ buttons = [
 
 # Add the expandable links to the sidebar
 for button_name, section in buttons:
-    with st.sidebar.selectbox(button_name, expanded=False):
+    with st.sidebar.selectbox(button_name, selectbox=False):
         st.markdown(f"[{button_name}]({section})", unsafe_allow_html=True)
 
 
