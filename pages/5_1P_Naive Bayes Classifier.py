@@ -127,11 +127,11 @@ for class_idx, class_log_prob in enumerate(model_gpa_disc_nbc.feature_log_prob_)
     st.write(f"\nKelas {class_idx}:")
     probs = np.exp(class_log_prob)  # balik dari log-prob ke prob
     for idx, prob in enumerate(probs):
-        if isinstance(prob, np.ndarray):
-            for cat_idx, p in enumerate(prob):
-                st.write(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
-        else:
-            st.write(f"  Feature {idx}: Probabilitas: {prob:.4f}")
+        # if isinstance(prob, np.ndarray):
+        #     for cat_idx, p in enumerate(prob):
+        #         st.write(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
+        # else:
+        #     st.write(f"  Feature {idx}: Probabilitas: {prob:.4f}")
 
 # CPT untuk GradeClass
 st.write("\nTabel Probabilitas Fitur untuk GradeClass:")
@@ -139,11 +139,11 @@ for class_idx, class_log_prob in enumerate(model_grade_class_nbc.feature_log_pro
     st.write(f"\nKelas {class_idx}:")
     probs = np.exp(class_log_prob)
     for idx, prob in enumerate(probs):
-        if isinstance(prob, np.ndarray):
-            for cat_idx, p in enumerate(prob):
-                st.write(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
-        else:
-            st.write(f"  Feature {idx}: Probabilitas: {prob:.4f}")
+        # if isinstance(prob, np.ndarray):
+        #     for cat_idx, p in enumerate(prob):
+        #         st.write(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
+        # else:
+        #     st.write(f"  Feature {idx}: Probabilitas: {prob:.4f}")
 
 st.subheader("Inferensi Probabilitas")
 # Hapus StudentID
