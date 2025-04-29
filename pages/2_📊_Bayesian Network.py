@@ -164,16 +164,16 @@ if selected == "Inferensi Probabilistik":
     
     # Lakukan prediksi untuk setiap baris data di test_data_bn
     for i in range(len(test_data_bn)):
-    # Pastikan hanya menggunakan fitur relevan (tanpa target)
-    evidence = test_data_bn.iloc[i].drop(['GPA_Disc', 'GradeClass'])
-
-    # Prediksi distribusi probabilitas untuk 'GPA_Disc'
-    gpa_disc_prob = inference.query(variables=['GPA_Disc'], evidence=evidence)
-    predictions_gpa_disc.append(gpa_disc_prob.values.argmax())  # Ambil nilai dengan probabilitas tertinggi
-
-    # Prediksi distribusi probabilitas untuk 'GradeClass'
-    grade_class_prob = inference.query(variables=['GradeClass'], evidence=evidence)
-    predictions_grade_class.append(grade_class_prob.values.argmax())  # Ambil nilai dengan probabilitas tertinggi
+        # Pastikan hanya menggunakan fitur relevan (tanpa target)
+        evidence = test_data_bn.iloc[i].drop(['GPA_Disc', 'GradeClass'])
+    
+        # Prediksi distribusi probabilitas untuk 'GPA_Disc'
+        gpa_disc_prob = inference.query(variables=['GPA_Disc'], evidence=evidence)
+        predictions_gpa_disc.append(gpa_disc_prob.values.argmax())  # Ambil nilai dengan probabilitas tertinggi
+    
+        # Prediksi distribusi probabilitas untuk 'GradeClass'
+        grade_class_prob = inference.query(variables=['GradeClass'], evidence=evidence)
+        predictions_grade_class.append(grade_class_prob.values.argmax())  # Ambil nilai dengan probabilitas tertinggi
     
     # Ubah GradeClass jadi angka
     true_gpa_disc = test_data_bn['GPA_Disc'].astype(int)
