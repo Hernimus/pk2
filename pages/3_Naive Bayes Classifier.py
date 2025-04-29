@@ -86,57 +86,43 @@ if selected == "Struktur NBC":
     st.pyplot(plt)
 
 if selected == "Split Data":
+    # Copy feature variables from session state
     feature_variables = st.session_state.feature_variables.copy()
+    
     # Pisahkan fitur dan target untuk data latih dan data uji
     X_nbc = data_nbc[feature_variables]
     y_gpa_disc_nbc = data_nbc['GPA_Disc']
     y_grade_class_nbc = data_nbc['GradeClass']
     
+    # Split data untuk GPA_Disc
     X_train_nbc, X_test_nbc, y_gpa_disc_train_nbc, y_gpa_disc_test_nbc = train_test_split(
         X_nbc, y_gpa_disc_nbc, test_size=0.2, random_state=42, stratify=y_gpa_disc_nbc
     )
     
+    # Split data untuk GradeClass (menggunakan X_nbc yang sama)
     _, _, y_grade_class_train_nbc, y_grade_class_test_nbc = train_test_split(
         X_nbc, y_grade_class_nbc, test_size=0.2, random_state=42, stratify=y_grade_class_nbc
     )
-
-    # Copy feature variables from session state
-feature_variables = st.session_state.feature_variables.copy()
-
-# Pisahkan fitur dan target untuk data latih dan data uji
-X_nbc = data_nbc[feature_variables]
-y_gpa_disc_nbc = data_nbc['GPA_Disc']
-y_grade_class_nbc = data_nbc['GradeClass']
-
-# Split data untuk GPA_Disc
-X_train_nbc, X_test_nbc, y_gpa_disc_train_nbc, y_gpa_disc_test_nbc = train_test_split(
-    X_nbc, y_gpa_disc_nbc, test_size=0.2, random_state=42, stratify=y_gpa_disc_nbc
-)
-
-# Split data untuk GradeClass (menggunakan X_nbc yang sama)
-_, _, y_grade_class_train_nbc, y_grade_class_test_nbc = train_test_split(
-    X_nbc, y_grade_class_nbc, test_size=0.2, random_state=42, stratify=y_grade_class_nbc
-)
-
-# Simpan semua variabel ke session state
-st.session_state.update({
-    'X_nbc': X_nbc,
-    'y_gpa_disc_nbc': y_gpa_disc_nbc,
-    'y_grade_class_nbc': y_grade_class_nbc,
-    'X_train_nbc': X_train_nbc,
-    'X_test_nbc': X_test_nbc,
-    'y_gpa_disc_train_nbc': y_gpa_disc_train_nbc,
-    'y_gpa_disc_test_nbc': y_gpa_disc_test_nbc,
-    'y_grade_class_train_nbc': y_grade_class_train_nbc,
-    'y_grade_class_test_nbc': y_grade_class_test_nbc
-})
-
-# Periksa jumlah kolom pada data latih dan uji
-st.write(f"Dimensi data latih: {X_train_nbc.shape}")
-st.write(f"Dimensi data uji: {X_test_nbc.shape}")
-
-# Pastikan kolom yang digunakan untuk prediksi sama antara latih dan uji
-assert X_train_nbc.shape[1] == X_test_nbc.shape[1], "Jumlah fitur pada data latih dan uji tidak sesuai!"
+    
+    # Simpan semua variabel ke session state
+    st.session_state.update({
+        'X_nbc': X_nbc,
+        'y_gpa_disc_nbc': y_gpa_disc_nbc,
+        'y_grade_class_nbc': y_grade_class_nbc,
+        'X_train_nbc': X_train_nbc,
+        'X_test_nbc': X_test_nbc,
+        'y_gpa_disc_train_nbc': y_gpa_disc_train_nbc,
+        'y_gpa_disc_test_nbc': y_gpa_disc_test_nbc,
+        'y_grade_class_train_nbc': y_grade_class_train_nbc,
+        'y_grade_class_test_nbc': y_grade_class_test_nbc
+    })
+    
+    # Periksa jumlah kolom pada data latih dan uji
+    st.write(f"Dimensi data latih: {X_train_nbc.shape}")
+    st.write(f"Dimensi data uji: {X_test_nbc.shape}")
+    
+    # Pastikan kolom yang digunakan untuk prediksi sama antara latih dan uji
+    assert X_train_nbc.shape[1] == X_test_nbc.shape[1], "Jumlah fitur pada data latih dan uji tidak sesuai!"
     
 
 if selected == "Model":
