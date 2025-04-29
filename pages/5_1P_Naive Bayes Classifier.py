@@ -52,7 +52,9 @@ data_nbc = st.session_state.data_normalization.copy()
 
 
 
-# Custom CSS to ensure the link text is white and turns red when hovered
+import streamlit as st
+
+# Apply the custom styles to the sidebar and links
 st.markdown("""
     <style>
     /* Style the sidebar links */
@@ -88,8 +90,6 @@ st.markdown("""
 st.sidebar.subheader("Navigasi Model Naive Bayes")
 st.sidebar.write("Pilih bagian yang ingin dilihat:")
 
-
-
 # Define the expandable sections
 buttons = [
     ("Dataset", "#dataset"),
@@ -97,17 +97,25 @@ buttons = [
     ("Split Data", "#split-data"),
     ("Inferensi Probabilitas", "#inferensi-probabilitas"),
     ("Analisis Sensitivitas", "#analisis-sensitivitas"),
-    ("Evaluasi Model", "#mean-absolute-error-mae-atau-root-mean-squared-error-rmse"),
-    ("Dataset", "#dataset"),
-    ("Analisis Sensitivitas", "#analisis-sensitivitas"),
+    ("Evaluasi Model", [
+        "#mean-absolute-error-mae-atau-root-mean-squared-error-rmse", 
+        "#evaluasi-untuk-gpa-disc-akurasi-presisi-recall", 
+        "#kalibrasi-probabilistik"
+    ]),
     ("Model GradeClass", "#grade-class")
 ]
 
 # Use a container to make sections expandable
 with st.sidebar:
     for button_name, section in buttons:
-        with st.expander(button_name, expanded=False):  # Make it expandable
-            st.markdown(f'<a class="sidebar-link" href="{section}">{button_name}</a>', unsafe_allow_html=True)
+        if isinstance(section, list):  # If the section contains multiple links
+            with st.expander(button_name, expanded=False):
+                for link in section:
+                    st.markdown(f'<a class="sidebar-link" href="{link}">{link}</a>', unsafe_allow_html=True)
+        else:  # Single section link
+            with st.expander(button_name, expanded=False):
+                st.markdown(f'<a class="sidebar-link" href="{section}">{button_name}</a>', unsafe_allow_html=True)
+
 
 
 
