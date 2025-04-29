@@ -55,6 +55,7 @@ st.subheader("Dataset")
 # Step awal ambil data
 st.dataframe(data_nbc.head())
 
+st.markdown("---")
 
 st.subheader("Struktur")
 # Definisikan target
@@ -78,6 +79,8 @@ nx.draw(G_nbc, pos, with_labels=True, node_size=3000, node_color="lightgreen", f
 plt.title("Struktur Naive Bayes Classifier (Semua Fitur ke Target)", fontsize=14)
 plt.tight_layout()
 st.pyplot(plt)
+
+st.markdown("---")
 
 st.subheader("Split Data")
 # Pisahkan fitur dan target untuk data latih dan data uji
@@ -103,6 +106,7 @@ st.write(f"Dimensi data uji: {X_test_nbc.shape}")
 # Pastikan kolom yang digunakan untuk prediksi sama antara latih dan uji
 assert X_train_nbc.shape[1] == X_test_nbc.shape[1], "Jumlah fitur pada data latih dan uji tidak sesuai!"
 
+st.markdown("---")
 
 # Model untuk GPA_Disc
 model_gpa_disc_nbc = CategoricalNB()
@@ -112,7 +116,6 @@ model_gpa_disc_nbc.fit(X_train_nbc, y_gpa_disc_train_nbc)
 model_grade_class_nbc = CategoricalNB()
 model_grade_class_nbc.fit(X_train_nbc, y_grade_class_train_nbc)
 
-st.write(model_gpa_disc_nbc.fit)
 
 
 # Model untuk GPA_Disc
@@ -147,6 +150,7 @@ for class_idx, class_log_prob in enumerate(model_grade_class_nbc.feature_log_pro
         else:
             print(f"  Feature {idx}: Probabilitas: {prob:.4f}")
 
+st.markdown("---")
 
 st.subheader("Inferensi Probabilitas")
 # Hapus StudentID
@@ -181,6 +185,7 @@ st.text(classification_report(y_grade_class_test_nbc, y_pred_grade_class_nbc))
 
 st.markdown("---")
 
+st.subheader("Analisis Sensitivitas")
 plt.figure(figsize=(12,8))
 sns.heatmap(data_nbc.corr()[['GPA_Disc']].sort_values(by='GPA_Disc', ascending=False), annot=True, cmap="coolwarm")
 plt.title("Sensitivity Analysis: Korelasi Variabel terhadap GPA_Disc", fontsize=16)
@@ -195,6 +200,7 @@ for prior in prior_types:
     accuracy = accuracy_score(y_gpa_disc_test_nbc, y_pred)
     st.write(f"Akurasi dengan prior {prior}: {accuracy:.4f}")
 
+st.markdown("---")
 
 st.title("Evaluasi Model")
 st.subheader("Mean Absolute Error (MAE) atau Root Mean Squared Error (RMSE)")
@@ -218,6 +224,8 @@ rmse_grade_class_nbc = np.sqrt(mean_squared_error(y_grade_class_test_nbc, y_pred
 st.write(f"MAE GradeClass (NBC): {mae_grade_class_nbc:.2f}")
 st.write(f"RMSE GradeClass (NBC): {rmse_grade_class_nbc:.2f}")
 
+st.markdown("---")
+
 st.subheader("Evaluasi untuk GPA_Disc: Akurasi, Presisi, Recall")
 from sklearn.metrics import mean_absolute_error, mean_squared_error, accuracy_score, precision_score, recall_score
 import numpy as np
@@ -230,6 +238,8 @@ recall_gpa_disc_nbc = recall_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc, ave
 st.write(f"Akurasi untuk GPA_Disc: {accuracy_gpa_disc_nbc:.4f}")
 st.write(f"Presisi untuk GPA_Disc: {precision_gpa_disc_nbc:.4f}")
 st.write(f"Recall untuk GPA_Disc: {recall_gpa_disc_nbc:.4f}")
+
+st.markdown("---")
 
 st.subheader("Evaluasi untuk GradeClass: Akurasi, Presisi, Recall, AUC")
 from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score
@@ -253,6 +263,8 @@ y_true_bin_grade_class_nbc = label_binarize(y_grade_class_test_nbc, classes=np.u
 # Hitung AUC untuk multi-class
 auc_grade_class_nbc = roc_auc_score(y_true_bin_grade_class_nbc, y_prob_grade_class_nbc, average='macro', multi_class='ovr')
 st.write(f"AUC GradeClass (NBC): {auc_grade_class_nbc:.2f}")
+
+st.markdown("---")
 
 st.subheader("Kalibrasi Probabilistik")
 from sklearn.calibration import calibration_curve
@@ -315,6 +327,7 @@ scores_grade_class = cross_val_score(model_grade_class_cv, X_nbc, y_grade_class_
 st.write(f"Cross-Validation MAE GPA_Disc (NBC): {-scores_gpa_disc.mean():.2f} ± {scores_gpa_disc.std():.2f}")
 st.write(f"Cross-Validation Accuracy GradeClass (NBC): {scores_grade_class.mean():.2f} ± {scores_grade_class.std():.2f}")
 
+st.markdown("---")
 
 st.subheader("Sensitivity analysis")
 import matplotlib.pyplot as plt
@@ -360,6 +373,7 @@ plt.title('Sensitivity Analysis terhadap Alpha di Naive Bayes (GradeClass)')
 plt.grid()
 st.pyplot(plt)
 
+st.markdown("---")
 
 st.subheader("Kemampuan untuk memberi rekomendasi peningkatan performa")
 # Rekomendasi berdasarkan sensitivitas
@@ -377,6 +391,8 @@ give_recommendations(gpa_disc_results, 'alpha (GPA_Disc)')
 # Menyusun hasil sensitivitas untuk GradeClass dan memberikan rekomendasi
 grade_class_results = list(zip(alphas, results_accuracy))
 give_recommendations(grade_class_results, 'alpha (GradeClass)')
+
+st.markdown("---")
 
 st.subheader("Comparison dengan baseline models")
 import matplotlib.pyplot as plt
