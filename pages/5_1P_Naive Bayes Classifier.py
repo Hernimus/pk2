@@ -417,8 +417,6 @@ mae_nbc_gpa, rmse_nbc_gpa = train_and_evaluate_regression(nbc_gpa_model, X_train
 nbc_grade_model = CategoricalNB()
 accuracy_nbc_grade, precision_nbc_grade, recall_nbc_grade, f1_nbc_grade = train_and_evaluate_classification(nbc_grade_model, X_train_nbc_transformed, y_grade_class_train_nbc, X_test_nbc_transformed, y_grade_class_test_nbc)
 
-# --- Streamlit UI ---
-st.title("Model Evaluation: Linear Regression & Naive Bayes")
 
 # Displaying results
 st.subheader("Evaluation Metrics for Regression and Classification")
