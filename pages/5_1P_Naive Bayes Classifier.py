@@ -252,7 +252,7 @@ y_true_bin_grade_class_nbc = label_binarize(y_grade_class_test_nbc, classes=np.u
 auc_grade_class_nbc = roc_auc_score(y_true_bin_grade_class_nbc, y_prob_grade_class_nbc, average='macro', multi_class='ovr')
 st.write(f"AUC GradeClass (NBC): {auc_grade_class_nbc:.2f}")
 
-st.subheader("Kalibrasi Probabilistikaaaaaaaa")
+st.subheader("Kalibrasi Probabilistik")
 from sklearn.calibration import calibration_curve
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import label_binarize
@@ -300,18 +300,59 @@ st.subheader("k-fold Cross-validation")
 from sklearn.model_selection import cross_val_score, KFold
 from sklearn.naive_bayes import CategoricalNB
 
-kf = KFold(n_splits=5, shuffle=True, random_state=42)
+def show_cross_validation_results():
+    st.header("Naive Bayes Classifier Cross-Validation Results")
+    
+    # Setup KFold
+    kf = KFold(n_splits=5, shuffle=True, random_state=42)
+    
+    # GPA_Disc prediction
+    with st.spinner('Calculating GPA_Disc MAE...'):
+        try:
+            model_gpa_disc_cv = CategoricalNB()
+            scores_gpa_disc = cross_val_score(model_gpa_disc_cv, X_nbc, y_gpa_disc_nbc, 
+                                            cv=kf, scoring='neg_mean_absolute_error')
+            
+            if np.isnan(scores_gpa_disc).any():
+                st.error("NaN values detected in GPA_Disc MAE scores. Please check your data.")
+            else:
+                st.success(f"Cross-Validation MAE GPA_Disc (NBC): {-scores_gpa_disc.mean():.2f} ± {scores_gpa_disc.std():.2f}")
+                
+                # Show detailed fold results
+                with st.expander("Show detailed fold results for GPA_Disc"):
+                    fold_results = pd.DataFrame({
+                        'Fold': range(1, 6),
+                        'MAE': -scores_gpa_disc
+                    })
+                    st.dataframe(fold_results)
+                    st.line_chart(fold_results.set_index('Fold'))
+        
+        except Exception as e:
+            st.error(f"Error in GPA_Disc calculation: {str(e)}")
+    
+    # GradeClass prediction
+    with st.spinner('Calculating GradeClass Accuracy...'):
+        try:
+            model_grade_class_cv = CategoricalNB()
+            scores_grade_class = cross_val_score(model_grade_class_cv, X_nbc, y_grade_class_nbc, 
+                                               cv=kf, scoring='accuracy')
+            
+            st.success(f"Cross-Validation Accuracy GradeClass (NBC): {scores_grade_class.mean():.2f} ± {scores_grade_class.std():.2f}")
+            
+            # Show detailed fold results
+            with st.expander("Show detailed fold results for GradeClass"):
+                fold_results = pd.DataFrame({
+                    'Fold': range(1, 6),
+                    'Accuracy': scores_grade_class
+                })
+                st.dataframe(fold_results)
+                st.line_chart(fold_results.set_index('Fold'))
+        
+        except Exception as e:
+            st.error(f"Error in GradeClass calculation: {str(e)}")
 
-# GPA_Disc prediction
-model_gpa_disc_cv = CategoricalNB()
-scores_gpa_disc = cross_val_score(model_gpa_disc_cv, X_nbc, y_gpa_disc_nbc, cv=kf, scoring='neg_mean_absolute_error')
-
-# GradeClass prediction
-model_grade_class_cv = CategoricalNB()
-scores_grade_class = cross_val_score(model_grade_class_cv, X_nbc, y_grade_class_nbc, cv=kf, scoring='accuracy')
-
-st.write(f"Cross-Validation MAE GPA_Disc (NBC): {-scores_gpa_disc.mean():.2f} ± {scores_gpa_disc.std():.2f}")
-st.write(f"Cross-Validation Accuracy GradeClass (NBC): {scores_grade_class.mean():.2f} ± {scores_grade_class.std():.2f}")
+# Call the function to display results
+show_cross_validation_results()
 
 st.subheader("Sensitivity analysis")
 import matplotlib.pyplot as plt
