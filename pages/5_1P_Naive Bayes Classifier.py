@@ -417,9 +417,6 @@ mae_nbc_gpa, rmse_nbc_gpa = train_and_evaluate_regression(nbc_gpa_model, X_train
 nbc_grade_model = CategoricalNB()
 accuracy_nbc_grade, precision_nbc_grade, recall_nbc_grade, f1_nbc_grade = train_and_evaluate_classification(nbc_grade_model, X_train_nbc_transformed, y_grade_class_train_nbc, X_test_nbc_transformed, y_grade_class_test_nbc)
 
-
-# Displaying results
-st.subheader("Evaluation Metrics for Regression and Classification")
 st.write(f"Linear Regression (Baseline) - MAE: {mae_lr:.2f}, RMSE: {rmse_lr:.2f}")
 st.write(f"Random Forest (Baseline) - Accuracy: {accuracy_rf*100:.2f}%, Precision: {precision_rf:.4f}, Recall: {recall_rf:.4f}, F1-Score: {f1_rf:.4f}")
 st.write(f"Naive Bayes (NBC) - GPA_Disc - MAE: {mae_nbc_gpa:.2f}, RMSE: {rmse_nbc_gpa:.2f}")
