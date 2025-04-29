@@ -102,46 +102,40 @@ st.write(f"Dimensi data uji: {X_test_nbc.shape}")
 assert X_train_nbc.shape[1] == X_test_nbc.shape[1], "Jumlah fitur pada data latih dan uji tidak sesuai!"
 
 
-# Model untuk GPA_Disc
+# Train models
 model_gpa_disc_nbc = CategoricalNB()
 model_gpa_disc_nbc.fit(X_train_nbc, y_gpa_disc_train_nbc)
 
-# Model untuk GradeClass
 model_grade_class_nbc = CategoricalNB()
 model_grade_class_nbc.fit(X_train_nbc, y_grade_class_train_nbc)
 
-# CPT untuk GPA_Disc
-print("Tabel Probabilitas Fitur untuk GPA_Disc:")
+# Streamlit display
+st.title('Model Probabilities')
 
-gpa_disc_table = []
-for class_idx, class_log_prob in enumerate(model_gpa_disc_nbc.feature_log_prob_):
-    gpa_disc_table.append(f"\nKelas {class_idx}:")
-    probs = np.exp(class_log_prob)  # balik dari log-prob ke prob
-    for idx, prob in enumerate(probs):
-        if isinstance(prob, np.ndarray):
-            for cat_idx, p in enumerate(prob):
-                gpa_disc_table.append(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
-        else:
-            gpa_disc_table.append(f"  Feature {idx}: Probabilitas: {prob:.4f}")
-            
-# Display the table for GPA_Disc
-st.text('\n'.join(gpa_disc_table))
+# Function to display the feature probability tables
+def display_probabilities(model, model_name):
+    st.subheader(f"Tabel Probabilitas Fitur untuk {model_name}:")
 
-# --- CPT untuk GradeClass ---
-st.subheader("Tabel Probabilitas Fitur untuk GradeClass:")
+    # Prepare data for display
+    prob_data = []
+    for class_idx, class_log_prob in enumerate(model.feature_log_prob_):
+        class_probs = np.exp(class_log_prob)  # Convert log-prob to prob
+        for idx, prob in enumerate(class_probs):
+            if isinstance(prob, np.ndarray):
+                for cat_idx, p in enumerate(prob):
+                    prob_data.append([f"Feature {idx} - Category {cat_idx}", f"Class {class_idx}", f"{p:.4f}"])
+            else:
+                prob_data.append([f"Feature {idx}", f"Class {class_idx}", f"{prob:.4f}"])
 
-grade_class_table = []
-for class_idx, class_log_prob in enumerate(model_grade_class_nbc.feature_log_prob_):
-    grade_class_table.append(f"\nKelas {class_idx}:")
-    probs = np.exp(class_log_prob)
-    for idx, prob in enumerate(probs):
-        if isinstance(prob, np.ndarray):
-            for cat_idx, p in enumerate(prob):
-                grade_class_table.append(f"  Feature {idx} - Category {cat_idx}: Probabilitas: {p:.4f}")
-        else:
-            grade_class_table.append(f"  Feature {idx}: Probabilitas: {prob:.4f}")
+    # Convert to DataFrame for better display
+    import pandas as pd
+    prob_df = pd.DataFrame(prob_data, columns=["Feature", "Class", "Probability"])
+    st.table(prob_df)
 
-# Display the table for GradeClass
-st.text('\n'.join(grade_class_table))
+# Display GPA_Disc probabilities
+display_probabilities(model_gpa_disc_nbc, "GPA_Disc")
+
+# Display GradeClass probabilities
+display_probabilities(model_grade_class_nbc, "GradeClass")
 
 
