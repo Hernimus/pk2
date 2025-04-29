@@ -110,11 +110,15 @@ buttons = [
     ("Inferensi Probabilitas", "#inferensi-probabilitas"),
     ("Analisis Sensitivitas", "#analisis-sensitivitas"),
     ("Evaluasi Model", [
-        ("MAE", "#mean-absolute-error-mae-atau-root-mean-squared-error-rmse",) 
-        ("Evaluasi untuk GPA_Disc", "#evaluasi-untuk-gpa-disc-akurasi-presisi-recall",) 
+        ("MAE", "#mean-absolute-error-mae-atau-root-mean-squared-error-rmse"), 
+        ("Evaluasi untuk GPA_Disc", "#evaluasi-untuk-gpa-disc-akurasi-presisi-recall"), 
         ("Evaluasi untuk GradeClass", "#kalibrasi-probabilistik")
     ]),
-    ("Model GradeClass", "#grade-class")
+    ("Valiadasi", [
+        ("MAE", "#mean-absolute-error-mae-atau-root-mean-squared-error-rmse"), 
+        ("Evaluasi untuk GPA_Disc", "#evaluasi-untuk-gpa-disc-akurasi-presisi-recall"), 
+        ("Evaluasi untuk GradeClass", "#kalibrasi-probabilistik")
+    ])
 ]
 
 # Use a container to make sections expandable
