@@ -293,3 +293,85 @@ plt.legend()
 plt.grid()
 st.pyplot(plt)
 
+st.markdown("---")
+
+st.title("Validasi")
+st.subheader("k-fold Cross-validation")
+from sklearn.model_selection import cross_val_score, KFold
+from sklearn.naive_bayes import CategoricalNB
+
+kf = KFold(n_splits=5, shuffle=True, random_state=42)
+
+# GPA_Disc prediction
+model_gpa_disc_cv = CategoricalNB()
+scores_gpa_disc = cross_val_score(model_gpa_disc_cv, X_nbc, y_gpa_disc_nbc, cv=kf, scoring='neg_mean_absolute_error')
+
+# GradeClass prediction
+model_grade_class_cv = CategoricalNB()
+scores_grade_class = cross_val_score(model_grade_class_cv, X_nbc, y_grade_class_nbc, cv=kf, scoring='accuracy')
+
+st.write(f"Cross-Validation MAE GPA_Disc (NBC): {-scores_gpa_disc.mean():.2f} ± {scores_gpa_disc.std():.2f}")
+st.write(f"Cross-Validation Accuracy GradeClass (NBC): {scores_grade_class.mean():.2f} ± {scores_grade_class.std():.2f}")
+
+st.subheader("Sensitivity analysis")
+import matplotlib.pyplot as plt
+from sklearn.naive_bayes import CategoricalNB
+from sklearn.metrics import mean_absolute_error, accuracy_score
+
+# Sensitivity Analysis terhadap Alpha untuk GPA_Disc
+alphas = [0.1, 0.5, 1.0, 5.0, 10.0]
+results_alpha = []
+
+for alpha in alphas:
+    model_temp = CategoricalNB(alpha=alpha)
+    model_temp.fit(X_train_nbc_transformed, y_gpa_disc_train_nbc)
+    preds = model_temp.predict(X_test_nbc_transformed)
+    mae = mean_absolute_error(y_gpa_disc_test_nbc, preds)
+    results_alpha.append(mae)
+
+# Plot sensitivity untuk GPA_Disc
+plt.figure(figsize=(8,5))
+plt.plot(alphas, results_alpha, marker='o')
+plt.xlabel('Alpha (Laplace Smoothing)')
+plt.ylabel('MAE GPA_Disc')
+plt.title('Sensitivity Analysis terhadap Alpha di Naive Bayes (GPA_Disc)')
+plt.grid()
+st.pyplot(plt)
+
+# Sensitivity Analysis terhadap Alpha untuk GradeClass
+results_accuracy = []
+
+for alpha in alphas:
+    model_temp = CategoricalNB(alpha=alpha)
+    model_temp.fit(X_train_nbc_transformed, y_grade_class_train_nbc)
+    preds = model_temp.predict(X_test_nbc_transformed)
+    accuracy = accuracy_score(y_grade_class_test_nbc, preds)
+    results_accuracy.append(accuracy)
+
+# Plot sensitivity untuk GradeClass
+plt.figure(figsize=(8,5))
+plt.plot(alphas, results_accuracy, marker='o')
+plt.xlabel('Alpha (Laplace Smoothing)')
+plt.ylabel('Akurasi GradeClass')
+plt.title('Sensitivity Analysis terhadap Alpha di Naive Bayes (GradeClass)')
+plt.grid()
+st.pyplot(plt)
+
+
+st.subheader("Kemampuan untuk memberi rekomendasi peningkatan performa")
+# Rekomendasi berdasarkan sensitivitas
+def give_recommendations(results, var_to_change):
+    # Menentukan hasil terbaik berdasarkan metrik yang diinginkan
+    best_result = min(results, key=lambda x: x[1]) if 'MAE' in var_to_change else max(results, key=lambda x: x[1])
+
+    # Memberikan rekomendasi berdasarkan hasil terbaik
+    st.write(f"Rekomendasi: Ubah nilai '{var_to_change}' ke {best_result[0]} untuk mendapatkan hasil terbaik.")
+
+# Menyusun hasil sensitivitas untuk GPA_Disc dan memberikan rekomendasi
+gpa_disc_results = list(zip(alphas, results_alpha))
+give_recommendations(gpa_disc_results, 'alpha (GPA_Disc)')
+
+# Menyusun hasil sensitivitas untuk GradeClass dan memberikan rekomendasi
+grade_class_results = list(zip(alphas, results_accuracy))
+give_recommendations(grade_class_results, 'alpha (GradeClass)')
+
