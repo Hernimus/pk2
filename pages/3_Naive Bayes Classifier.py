@@ -54,7 +54,7 @@ data_nbc = st.session_state.data_normalization.copy()
 with st.sidebar:
     selected = option_menu(
         menu_title="MODEL",
-        options=["Struktur Bayesian Network", "Feature dan Split", "Model & Compute Conditional Probability Tables (CPT)", "Inferensi Probabilistik"],
+        options=["Struktur NBC", "Feature dan Split", "Model & Compute Conditional Probability Tables (CPT)", "Inferensi Probabilistik"],
     )
 
 
