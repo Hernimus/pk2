@@ -64,7 +64,9 @@ buttons = [
 # Add the expandable links to the sidebar
 for button_name, section in buttons:
     with st.sidebar.expander(button_name, expanded=False):
-        st.markdown(f'<a href="{section}" style="color:white;text-decoration:none;">{button_name}</a>', unsafe_allow_html=True)
+        st.markdown(f'''
+            <a href="{section}" style="color:white;text-decoration:none; transition: color 0.3s ease;" onmouseover="this.style.color='red'" onmouseout="this.style.color='white'">{button_name}</a>
+        ''', unsafe_allow_html=True)
 
 
 st.subheader("Dataset")
