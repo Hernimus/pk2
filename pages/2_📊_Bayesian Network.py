@@ -124,6 +124,8 @@ if selected == "Feature dan Split":
     train_data_bn['GPA_Disc'] = train_target['GPA_Disc']
     train_data_bn['GradeClass'] = train_target['GradeClass']
 
+    st.session_state.train_data_bn = train_data_bn
+
     test_data_bn = test_features.copy()
     test_data_bn['GPA_Disc'] = test_target['GPA_Disc']
     test_data_bn['GradeClass'] = test_target['GradeClass']
@@ -136,6 +138,7 @@ if selected == "Feature dan Split":
 
 if selected == "Model & Compute Conditional Probability Tables (CPT)":
     edges_bn = st.session_state.edges_bn
+    train_data_bn = st.session_state.train_data_bn
     # Membuat model jaringan
     model_bn = BayesianNetwork(edges_bn)
     
