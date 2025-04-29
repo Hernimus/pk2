@@ -58,7 +58,7 @@ st.markdown("""
     /* Style the sidebar links */
     .sidebar-link {
         color: white !important;
-        text-decoration: none;
+        text-decoration: none !important;
         padding: 5px 0;
         display: block;
     }
@@ -90,9 +90,15 @@ st.sidebar.write("Pilih bagian yang ingin dilihat:")
 
 # Define the expandable sections
 buttons = [
-    ("Dataset", "#dataset"),
-    ("Analisis Sensitivitas", "#analisis-sensitivitas"),
-    ("Model GradeClass", "#grade-class")
+  ("Dataset", "#dataset"),
+  ("Stuktur", "#struktur"),
+  ("Split Data", "#split-data"),
+  ("Inferensi Probabilitas", "#inferensi-probabilitas"),
+  ("Analisis Sensitivitas", "#analisis-sensitivitas"),
+  ("Evaluasi Model", "#mean-absolute-error-mae-atau-root-mean-squared-error-rmse", "#evaluasi-untuk-gpa-disc-akurasi-presisi-recall", "#kalibrasi-probabilistik"),
+  ("Dataset", "#dataset"),
+  ("Analisis Sensitivitas", "#analisis-sensitivitas"),
+  ("Model GradeClass", "#grade-class")
 ]
 
 # Use a container to make sections expandable
