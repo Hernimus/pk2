@@ -170,7 +170,21 @@ y_pred_grade_class_nbc = model_grade_class_nbc_inf.predict(X_test_nbc_transforme
 
 # Evaluasi model
 st.write("\nAkurasi GPA_Disc:", accuracy_score(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
-st.write(classification_report(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
+st.table(classification_report(y_gpa_disc_test_nbc, y_pred_gpa_disc_nbc))
 
 st.write("\nAkurasi GradeClass:", accuracy_score(y_grade_class_test_nbc, y_pred_grade_class_nbc))
-st.write(classification_report(y_grade_class_test_nbc, y_pred_grade_class_nbc))
+st.table(classification_report(y_grade_class_test_nbc, y_pred_grade_class_nbc))
+
+plt.figure(figsize=(12,8))
+sns.heatmap(data_nbc.corr()[['GPA_Disc']].sort_values(by='GPA_Disc', ascending=False), annot=True, cmap="coolwarm")
+plt.title("Sensitivity Analysis: Korelasi Variabel terhadap GPA_Disc", fontsize=16)
+st.pyplot(plt)
+
+# Contoh eksperimen dengan berbagai prior
+prior_types = ['uniform', 'empirical']
+for prior in prior_types:
+    model = CategoricalNB(alpha=1.0, fit_prior=True)
+    model.fit(X_train_nbc_transformed, y_gpa_disc_train_nbc)
+    y_pred = model.predict(X_test_nbc_transformed)
+    accuracy = accuracy_score(y_gpa_disc_test_nbc, y_pred)
+    st.write(f"Akurasi dengan prior {prior}: {accuracy:.4f}")
