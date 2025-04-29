@@ -197,6 +197,7 @@ if selected == "PREPROCESSING":
     if sub_selected == "Normalisasi atau diskretisasi variabel": 
         # copy data_mapped
         data_normalization = data.copy()
+        
         st.session_state.data_normalization = data_normalization
 
         # hilangkan whitespace
@@ -231,14 +232,18 @@ if selected == "PREPROCESSING":
 
         # Drop NaN jika ada
         data_normalization = data_normalization.dropna().reset_index(drop=True)
-
+        
+        st.subheader("Preview Variabel Diskretisasi")
         # Tampilkan hasil diskretisasi
         st.table(data_normalization[['GPA_Disc', 'StudyTimeWeekly_Disc']].head())
-
+        
+        st.subheader(" Preview Variabel Numerik & Diskret")
         st.table(data_normalization[['Age', 'Absences', 'GPA_Disc', 'StudyTimeWeekly_Disc']].head(5))
-    
-        st.dataframe(data_normalization[['Age', 'Absences', 'GPA_Disc' , 'StudyTimeWeekly_Disc']].nunique())
 
+        st.subheader("Jumlah Kategori Unik")
+        st.table(data_normalization[['Age', 'Absences', 'GPA_Disc' , 'StudyTimeWeekly_Disc']].nunique())
+
+        st.subheader("Statistik Deskriptif")
         st.table(data_normalization[['Age', 'Absences', 'GPA_Disc' , 'StudyTimeWeekly_Disc']].describe())
 
 
