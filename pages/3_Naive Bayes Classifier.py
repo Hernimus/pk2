@@ -155,7 +155,6 @@ if selected == "CPT":
     
    # CPT untuk GPA_Disc
     st.write("Tabel Probabilitas Fitur untuk GPA_Disc:")
-    st.write(f"Shape feature_log_prob_: {model_gpa_disc_nbc.feature_log_prob_.shape}")
     for class_idx, class_log_prob in enumerate(model_gpa_disc_nbc.feature_log_prob_):
         st.write(f"\nKelas {class_idx}:")
         probs = np.exp(class_log_prob)  # balik dari log-prob ke prob
@@ -178,4 +177,5 @@ if selected == "CPT":
             else:
                 st.write(f"  Feature {idx}: Probabilitas: {prob:.4f}")
 
-    
+if selected == "":
+    st.write("")
