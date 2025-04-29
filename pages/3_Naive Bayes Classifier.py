@@ -137,3 +137,5 @@ if selected == "Model":
     # Model untuk GradeClass
     model_grade_class_nbc = CategoricalNB()
     model_grade_class_nbc.fit(X_train_nbc, y_grade_class_train_nbc)
+
+    st.write(model_gpa_disc_nbc.fit)
