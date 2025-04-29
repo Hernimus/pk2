@@ -63,7 +63,7 @@ buttons = [
 
 # Add the expandable links to the sidebar
 for button_name, section in buttons:
-    with st.sidebar.expander(button_name, expander=False):
+    with st.sidebar.expander(button_name, expanded=False):
         st.write(f"[{button_name}]({section})", unsafe_allow_html=True)
 
 
