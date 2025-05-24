@@ -34,10 +34,8 @@ with st.sidebar:
                  "Inferensi Probabilistik",
                  "Analisis Kausal",
                  "Analisis Intervensi",
-                 "Clustering Mahasiswa",
                  "Evaluasi Model",
-                 "Validasi Model",
-                 "Testing"],
+                 "Validasi Model"]
     )
 
 
@@ -55,7 +53,13 @@ if selected == "Struktur BN":
             ('Absences', 'GPA_Disc'),
             ('GPA_Disc', 'GradeClass')
         ]
-
+    st.markdown("---")
+    with open("./data/data_bn_split_info.json", "r") as f:
+        loaded_info_bn_fs = json.load(f)
+    
+    st.write("### Kolom Yang Dipakai")
+    st.write(loaded_info_bn_fs["column_use"])
+    
     st.markdown("---")
     st.write("Visualisasi Struktur Bayesian Network")
     # Membuat Directed Graph dari edges yang sudah didefinisikan
@@ -275,24 +279,24 @@ if selected == "Analisis Intervensi":
 
 
 
-if selected == "Clustering Mahasiswa":
-    st.write("### Clustering Mahasiswa")
+# if selected == "Clustering Mahasiswa":
+#     st.write("### Clustering Mahasiswa")
 
-    data_clean_1 = pd.read_csv("./data/data_clean_1.csv")
-    data_clean_2 = pd.read_csv("./data/data_clean_2.csv")
-    features_bn_cls = ['Age', 'StudyTimeWeekly', 'Absences', 'Tutoring', 'ParentalSupport', 'Extracurricular', 'Sports', 'Music', 'Volunteering']
+#     data_clean_1 = pd.read_csv("./data/data_normalization.csv")
+#     data_clean_2 = pd.read_csv("./data/data_normalization.csv")
+#     features_bn_cls = ['Age', 'StudyTimeWeekly_Disc', 'Absences', 'Tutoring', 'ParentalSupport', 'Extracurricular', 'Sports', 'Music', 'Volunteering']
 
-    plt.figure(figsize=(8,6))
-    plt.scatter(data_clean_1['StudyTimeWeekly'], data_clean_1['Absences'], c=data_clean_1['Cluster'], cmap='viridis')
-    plt.xlabel('StudyTimeWeekly')
-    plt.ylabel('Absences')
-    plt.title('Clustering Mahasiswa Berdasarkan Profil Performa')
-    plt.grid(True)
-    st.pyplot(plt)
-    st.markdown("---")
+#     plt.figure(figsize=(8,6))
+#     plt.scatter(data_clean_1['StudyTimeWeekly_Disc'], data_clean_1['Absences'], c=data_clean_1['Cluster'], cmap='viridis')
+#     plt.xlabel('StudyTimeWeekly_Disc')
+#     plt.ylabel('Absences')
+#     plt.title('Clustering Mahasiswa Berdasarkan Profil Performa')
+#     plt.grid(True)
+#     st.pyplot(plt)
+#     st.markdown("---")
 
-    st.write("Rata-rata tiap cluster berdasarkan fitur:")
-    st.write(data_clean_2.groupby('Cluster')[features_bn_cls].mean())
+#     st.write("Rata-rata tiap cluster berdasarkan fitur:")
+#     st.write(data_clean_2.groupby('Cluster')[features_bn_cls].mean())
 
 
 if selected == "Evaluasi Model":
@@ -313,20 +317,20 @@ if selected == "Evaluasi Model":
         st.write("#### Evaluasi Model untuk GPA (MAE, RMSE)")
         st.write(f"MAE: `{em_wosh["gpa_mae"] * 100:.2f}%`")
         st.write(f"RMSE: `{em_wosh["gpa_rmse"] * 100:.2f}%`")
-        st.write("Nilai Mean Absolute Error (MAE) sebesar `38%` menunjukkan bahwa rata-rata kesalahan prediksi terhadap GPA_Disc relatif rendah. Sementara itu, Root Mean Squared Error (RMSE) sebesar `81%` mengindikasikan bahwa secara keseluruhan prediksi model cukup akurat, meskipun terdapat beberapa kesalahan prediksi yang lebih besar.")
+        st.write("Nilai Mean Absolute Error (MAE) sebesar 0,39 menunjukkan bahwa rata-rata kesalahan prediksi terhadap GPA_Disc relatif rendah. Sementara itu, Root Mean Squared Error (RMSE) sebesar 0,82 mengindikasikan bahwa secara keseluruhan prediksi model cukup akurat, meskipun terdapat beberapa kesalahan prediksi yang lebih besar.")
 
         st.markdown("---")
         st.write("#### Evaluasi Model untuk GradeClass (Akurasi, Presisi, Recall, AUC)")
         st.write(f"Akurasi: `{em_wosh["gradeclass_akurasi"] * 100:.2f}%`")
         st.write(f"Presisi: `{em_wosh["gradeclass_presisi"] * 100:.2f}%`")
         st.write(f"Recall: `{em_wosh["gradeclass_recall"] * 100:.2f}%`")
-        st.write("Berdasarkan persentase tersebut, model berhasil memprediksi GradeClass dengan akurasi `64,30%`. Presisi sebesar `64,93%` menunjukkan bahwa prediksi `benar` model cukup konsisten. Recall `64,30%` berarti model mampu menangkap sebagian besar data dengan tepat.")
+        st.write("Berdasarkan hasil evaluasi, model berhasil memprediksi GradeClass dengan akurasi sebesar `70,98%`, yang berarti sekitar 71 dari 100 prediksi yang dilakukan oleh model sudah tepat. Presisi sebesar 70,10% menunjukkan bahwa dari semua prediksi yang diklasifikasikan ke dalam suatu kelas, sekitar 70% di antaranya benar, mencerminkan konsistensi model dalam memberikan label yang tepat. Recall sebesar `70,98%` mengindikasikan bahwa model mampu menangkap sebagian besar data yang relevan dengan cukup baik.")
 
         st.markdown("---")
         st.write("Area Under ROC Curve (AUC) untuk klasifikasi performa")
         st.write(f"GPA AUC: `{em_wosh["gpa_auc"] * 100:.2f}%`")
         st.write(f"GradeClass AUC: `{em_wosh["gradeclass_auc"] * 100:.2f}%`")
-        st.write("Berdasarkan persentase tersebut, AUC GradeClass`81%` dan AUC GPA `90%` menandakan performa klasifikasi model cukup baik untuk GradeClass dan Sangat Baik untuk GPA dalam membedakan kelas.")
+        st.write("Berdasarkan persentase tersebut, AUC GPA `89%` dan AUC GradeClass `90%` menandakan performa klasifikasi model cukup baik untuk GradeClass dan Sangat Baik untuk GPA dalam membedakan kelas.")
 
 
     if sub_selected == "Kalibrasi Probabilistik":
@@ -426,7 +430,7 @@ if selected == "Validasi Model":
             menu_title="",
             options=["K-fold Cross-Validation",
                      "Sensitivity Analysis",
-                     "Memberi Rekomendasi",
+                    #  "Memberi Rekomendasi",
                      "Comparison Dengan Baseline Model"],
         )
     
@@ -443,14 +447,14 @@ if selected == "Validasi Model":
         st.write(f"Cross-validation MAE untuk GPA_Disc: `{k_fold_bn["mean_mae_gpa"]:.3f}` ± `{k_fold_bn["std_mae_gpa"]:.3f}`")
         st.write(f"Cross-validation RMSE untuk GPA_Disc: `{k_fold_bn["mean_rmse_gpa"]:.3f}` ± `{k_fold_bn["std_rmse_gpa"]:.3f}`")
 
-        st.write("Hasil cross-validation menunjukkan bahwa model memiliki MAE rata-rata sebesar 0.119 dan RMSE rata-rata sebesar 0.402 untuk prediksi GPA_Disc, dengan variasi (standar deviasi) yang kecil. Ini menandakan bahwa kesalahan prediksi model relatif rendah dan stabil di berbagai lipatan data.")
+        st.write("Hasil cross-validation menunjukkan bahwa model memiliki MAE rata-rata sebesar 0.035 dengan variasi ± 0.007, dan RMSE rata-rata sebesar 0.209 dengan variasi ± 0.032 untuk prediksi GPA_Disc. Nilai ini mengindikasikan bahwa kesalahan prediksi model relatif kecil dan stabil di berbagai lipatan data, dengan variasi yang juga cukup rendah. Hal ini menunjukkan bahwa model cukup andal dalam memberikan prediksi yang konsisten dengan kesalahan yang minim.")
 
         st.markdown("---")
         st.write("### Hasil evaluasi model menggunakan K-fold cross-validation (GradeClass):")
         st.write(f"Cross-validation MAE untuk GradeClass: `{k_fold_bn["mean_mae_grade_class"]:.3f}` ± `{k_fold_bn["std_mae_grade_class"]:.3f}`")
         st.write(f"Cross-validation RMSE untuk GradeClass: `{k_fold_bn["mean_rmse_grade_class"]:.3f}` ± `{k_fold_bn["std_rmse_grade_class"]:.3f}`")
 
-        st.write("Hasil cross-validation menunjukkan MAE rata-rata 0.147 dan RMSE rata-rata 0.611 untuk prediksi GradeClass, dengan variasi yang masih cukup kecil. Ini menunjukkan bahwa model cukup konsisten, meskipun tingkat kesalahan prediksinya sedikit lebih tinggi dibandingkan prediksi GPA_Disc.")
+        st.write("Hasil cross-validation menunjukkan MAE sebesar 0.000 dan RMSE sebesar 0.000 untuk prediksi GradeClass, yang berarti tidak ada kesalahan prediksi yang terdeteksi dalam lipatan data yang diuji.")
 
 
     if sub_selected == "Sensitivity Analysis":
@@ -517,39 +521,39 @@ if selected == "Validasi Model":
         st.pyplot(plt)
 
 
-        st.write("Hasil menunjukkan bahwa perubahan prior type (BDeu atau K2) dan nilai equivalent sample size (5, 10, 20) tidak mempengaruhi MAE, yang tetap stabil di angka 0.38. Ini menandakan model cukup robust terhadap variasi parameter ini.")
+        st.write("Hasil menunjukkan bahwa perubahan prior_type (BDeu atau K2) dan nilai equivalent_sample_size (5, 10, 20) tidak mempengaruhi MAE, yang tetap stabil di angka 0.39. Hal ini menandakan bahwa model cukup robust terhadap variasi parameter ini, dengan tingkat kesalahan yang konsisten meskipun terjadi perubahan pada konfigurasi prior dan ukuran sampel.")
 
 
-    if sub_selected == "Memberi Rekomendasi":
-        st.markdown("---")
-        st.write("#### Memberi Rekomendasi")
-        loaded_sensitivity_df = pd.read_csv("./data/sensitivity_analysis_results_bn.csv")
+    # if sub_selected == "Memberi Rekomendasi":
+    #     st.markdown("---")
+    #     st.write("#### Memberi Rekomendasi")
+    #     loaded_sensitivity_df = pd.read_csv("./data/sensitivity_analysis_results_bn.csv")
 
-        with st.expander("Code"):
-            code_m_r_bn = '''
-            # Fungsi untuk memberikan rekomendasi berdasarkan hasil sensitivitas
-            def give_recommendations(sensitivity_results):
-                # Menentukan nilai MAE terbaik
-                best_mae = min(sensitivity_results, key=lambda x: x[1])
-                print(f"Rekomendasi: Menggunakan kombinasi {best_mae[0]} memberikan MAE terbaik dengan nilai {best_mae[1]:.2f}.")
+    #     with st.expander("Code"):
+    #         code_m_r_bn = '''
+    #         # Fungsi untuk memberikan rekomendasi berdasarkan hasil sensitivitas
+    #         def give_recommendations(sensitivity_results):
+    #             # Menentukan nilai MAE terbaik
+    #             best_mae = min(sensitivity_results, key=lambda x: x[1])
+    #             print(f"Rekomendasi: Menggunakan kombinasi {best_mae[0]} memberikan MAE terbaik dengan nilai {best_mae[1]:.2f}.")
 
-            # Panggil fungsi untuk memberikan rekomendasi
-            give_recommendations(sensitivity_results)
-            '''
-            st.code(code_m_r_bn, language='python')
+    #         # Panggil fungsi untuk memberikan rekomendasi
+    #         give_recommendations(sensitivity_results)
+    #         '''
+    #         st.code(code_m_r_bn, language='python')
 
-        st.markdown("---")
-        # Fungsi untuk memberikan rekomendasi berdasarkan hasil sensitivitas
-        def give_recommendations(sensitivity_results):
-            # Menentukan nilai MAE terbaik
-            best_mae = min(sensitivity_results, key=lambda x: x[1])
-            st.write(f"Rekomendasi: Menggunakan kombinasi `{best_mae[0]}` memberikan MAE terbaik dengan nilai `{best_mae[1]:.2f}`.")
+    #     st.markdown("---")
+    #     # Fungsi untuk memberikan rekomendasi berdasarkan hasil sensitivitas
+    #     def give_recommendations(sensitivity_results):
+    #         # Menentukan nilai MAE terbaik
+    #         best_mae = min(sensitivity_results, key=lambda x: x[1])
+    #         st.write(f"Rekomendasi: Menggunakan kombinasi `{best_mae[0]}` memberikan MAE terbaik dengan nilai `{best_mae[1]:.2f}`.")
 
-        # Ubah DataFrame menjadi list of tuples
-        sensitivity_results = list(loaded_sensitivity_df.itertuples(index=False, name=None))
+    #     # Ubah DataFrame menjadi list of tuples
+    #     sensitivity_results = list(loaded_sensitivity_df.itertuples(index=False, name=None))
 
-        # Panggil fungsi rekomendasi
-        give_recommendations(sensitivity_results)
+    #     # Panggil fungsi rekomendasi
+    #     give_recommendations(sensitivity_results)
 
 
     if sub_selected == "Comparison Dengan Baseline Model":
@@ -592,14 +596,6 @@ if selected == "Validasi Model":
 
         st.pyplot(fig)
 
-        # Penjelasan Regresi
-        st.markdown(f"""
-        **Analisis:**
-        - *Bayesian Network* menghasilkan MAE sebesar `{mae_scores[0]:.2f}%` dan RMSE `{rmse_scores[0]:.2f}%`, menunjukkan performa yang cukup stabil.
-        - *Linear Regression* memiliki nilai MAE `{mae_scores[1]:.2f}%` dan RMSE `{rmse_scores[1]:.2f}%`, yang berarti kesalahan rata-rata prediksinya lebih tinggi, meskipun deviasi error-nya (RMSE) sedikit lebih kecil.
-        - Dengan performa numerik yang relatif kompetitif dan tambahan keunggulan dalam interpretabilitas serta reasoning probabilistik, Bayesian Network layak dipertimbangkan sebagai model regresi yang seimbang antara akurasi dan transparansi.
-        """)
-
         st.markdown("---")
 
         # --- 2. Perbandingan Klasifikasi (Akurasi & AUC) --- #
@@ -631,79 +627,3 @@ if selected == "Validasi Model":
         st.pyplot(fig2)
 
         # Penjelasan Klasifikasi
-        st.markdown(f"""
-        **Analisis:**
-        - *Bayesian Network* menunjukkan AUC sebesar `{auc_scores[0]:.2f}%`, sementara *Random Forest* mencetak AUC `{auc_scores[1]:.2f}%` dengan akurasi `{accuracy_scores[1]:.2f}%`.
-        - Jika interpretabilitas dan probabilistik reasoning dibutuhkan, *Bayesian Network* bisa lebih cocok.
-        - Jika tujuan utama adalah prediksi kelas secara akurat, maka Random Forest bisa menjadi pilihan yang lebih baik. 
-        - Sebaliknya, jika dibutuhkan kemampuan interpretasi probabilistik dan pemodelan hubungan antar variabel, maka Bayesian Network lebih unggul karena memberikan representasi yang lebih transparan dan explainable.
-        """)
-
-
-if selected == "Testing":
-    st.title("Testing Model")
-    st.markdown("---")
-
-    # Load model dan inference
-    with open('./models/BN/model_bn.pkl', 'rb') as model_file:
-        model_bn = pickle.load(model_file)
-
-    with open('./models/BN/inference_bn.pkl', 'rb') as inference_file:
-        inference_bn = pickle.load(inference_file)
-
-    # Load fitur yang harus ada
-    with open('./models/BN/features_bn.pkl', 'rb') as f:
-        features_bn = pickle.load(f)
-    feature_columns = features_bn.columns.tolist()
-
-    # State names dari model
-    state_names = {
-        'StudyTimeWeekly_Disc': [0, 1, 2, 3],
-        'ParentalEducation': [0, 1, 2, 3, 4],
-        'Absences': [0, 1, 2, 3, 4],
-        'ParentalSupport': [0, 1, 2, 3, 4],
-        'Extracurricular': [0, 4],
-        'Tutoring': [0, 4]
-    }
-
-    # Fungsi validasi
-    def validate_evidence(evidence_input):
-        for feature, value in evidence_input.items():
-            valid_states = state_names.get(feature)
-            if valid_states:
-                if not isinstance(value, int):
-                    value = int(value)
-                if value not in valid_states:
-                    raise ValueError(f"Nilai '{value}' untuk fitur '{feature}' tidak valid. Pilih dari {valid_states}")
-        return evidence_input
-
-    # Fungsi prediksi
-    def predict_gpa_and_grade(evidence_input):
-        evidence_input = validate_evidence(evidence_input)
-        gpa_result = inference_bn.query(variables=['GPA_Disc'], evidence=evidence_input)
-        gpa_pred = gpa_result.values.argmax()
-        evidence_with_gpa = evidence_input.copy()
-        evidence_with_gpa['GPA_Disc'] = gpa_pred
-        grade_result = inference_bn.query(variables=['GradeClass'], evidence=evidence_with_gpa)
-        grade_pred = grade_result.values.argmax()
-        return gpa_pred, grade_pred
-
-    # Input interaktif Streamlit
-    st.header("Input Data untuk Prediksi")
-    evidence_input = {
-        'StudyTimeWeekly_Disc': st.selectbox("Waktu Belajar per Minggu (0=Sedikit, 3=Banyak)", state_names['StudyTimeWeekly_Disc'], index=0),
-        'ParentalEducation': st.selectbox("Tingkat Pendidikan Orang Tua (0:None, 1:HighSc, 2:College, 3:Bachelor, 4:Hhigher)", state_names['ParentalEducation'], index=1),
-        'Absences': st.selectbox("Absensi (0-4)", state_names['Absences'], index=1),
-        'ParentalSupport': st.selectbox("Dukungan Orang Tua (0=Tidak ada, 4=Sangat tinggi)", state_names['ParentalSupport'], index=1),
-        'Extracurricular': st.radio("Ikut Ekstrakurikuler?", options=state_names['Extracurricular'], index=0, format_func=lambda x: "Tidak" if x == 0 else "Ya"),
-        'Tutoring': st.radio("Ikut Les/Tutoring?", options=state_names['Tutoring'], index=0, format_func=lambda x: "Tidak" if x == 0 else "Ya"),
-    }
-
-    # Tombol prediksi
-    if st.button("Prediksi"):
-        try:
-            predicted_gpa, predicted_grade_class = predict_gpa_and_grade(evidence_input)
-            st.success(f"Prediksi GPA_Disc: `{predicted_gpa}`")
-            st.success(f"Prediksi GradeClass: `{predicted_grade_class}`")
-        except ValueError as e:
-            st.error(str(e))

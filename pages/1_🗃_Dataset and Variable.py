@@ -19,6 +19,7 @@ st.set_page_config(
 
 data = pd.read_csv("./data/Student_performance_data_.csv")
 data_normalization = pd.read_csv("./data/data_normalization.csv")
+data_normalization_notyet = pd.read_csv("./data/data_normalization_notyet.csv")
 
 with st.sidebar:
     selected = option_menu(
@@ -166,51 +167,65 @@ if selected == "PREPROCESSING":
 
         st.write("")
         st.write("#### Kolom GPA dan StudyTimeWeekly")
-        st.dataframe(data[["GPA", "StudyTimeWeekly"]].head())
+        st.dataframe(data[["GPA", "StudyTimeWeekly", "Absences"]].head())
 
 
         st.markdown("---")
-        st.write('#### Diskretisasi Kolom GPA dan StudyTimeWeekly')
+        st.write('#### Diskretisasi Kolom GPA, StudyTimeWeekly dan Absences')
         code_discrit_1 = '''
-        gpa_bins = [0, 2.0, 2.5, 3.0, 3.5, float('inf')]
-        gpa_labels = [4, 3, 2, 1, 0]
+        # Bins dan labels untuk diskretisasi GPA dan StudyTimeWeekly
+        gpa_bins = [0, 2.0, 2.5, 3.0, 3.5, float('inf')]  # Bins harus monoton meningkat
+        gpa_labels = [4, 3, 2, 1, 0]  # Label untuk setiap bin GPA
 
-        study_bins = [0, 5, 10, 15, float('inf')]
-        study_labels = [0, 1, 2, 3]
+        study_bins = [0, 5, 10, 15, float('inf')]  # Bins untuk StudyTimeWeekly
+        study_labels = [0, 1, 2, 3]  # Label untuk setiap bin StudyTimeWeekly
+
+        # Tentukan bins untuk Absences dengan rentang 0-30
+        absences_bins = [0, 6, 12, 18, 24, 30]
+        absences_labels = [0, 1, 2, 3, 4]  # Label 0-4
+
 
         # Terapkan pd.cut untuk diskretisasi
-        data_normalization['GPA_Disc'] = pd.cut(data_normalization['GPA'], bins=gpa_bins, labels=gpa_labels, right=False)
-        data_normalization['StudyTimeWeekly_Disc'] = pd.cut(data_normalization['StudyTimeWeekly'], bins=study_bins, labels=study_labels, right=False)
+        data_normalization['GPA_Disc'] = pd.cut(data_normalization['GPA'], bins=gpa_bins, labels=gpa_labels, right=False).astype(int)
+        data_normalization['StudyTimeWeekly_Disc'] = pd.cut(data_normalization['StudyTimeWeekly'], bins=study_bins, labels=study_labels, right=False).astype(int)
+        data_normalization['Absences'] = pd.cut(data_normalization['Absences'], bins=absences_bins, labels=absences_labels, right=False).astype(int)
+
         '''
         st.code(code_discrit_1, language='python')
 
         # Tampilkan hasil diskretisasi
         st.write("##### RESULT")
-        st.table(data_normalization[['GPA_Disc', 'StudyTimeWeekly_Disc']].head())
+        st.table(data_normalization[['GPA_Disc', 'StudyTimeWeekly_Disc', "Absences"]].head())
 
         st.write("\n")
         st.markdown("---")
         st.write("\n")
 
-        st.write('#### Diskretisasi Semua Kolom Selain StudyTimeWeekly_Disc dan GPA_Disc')
-        code_discrit_2 = '''
-        # Drop kolom asli yang sudah didiskritkan
-        data_normalization = data_normalization.drop(["GPA", "StudyTimeWeekly"], axis=1)
+        st.write("\n")
+        st.markdown("---")
+        st.write("\n")
 
-        # Pisahkan fitur numerik yang perlu didiskritkan
-        numerical_features_to_discretize = [col for col in data_normalization.columns if col not in ['GPA_Disc', 'StudyTimeWeekly_Disc']]
+        st.write('#### Anomali data')
+        code_check_anomali = '''
+        different_rows = data_normalization[data_normalization['GPA_Disc'] != data_normalization['GradeClass']]
 
-        # Diskretisasi sisa fitur yang belum diskrit (gunakan KBinsDiscretizer untuk fitur lainnya)
-        discretizer = KBinsDiscretizer(n_bins=5, encode='ordinal', strategy='uniform')
-        data_normalization[numerical_features_to_discretize] = discretizer.fit_transform(data_normalization[numerical_features_to_discretize])
+        # Tampilkan hasilnya
+        print(different_rows[['GPA_Disc', 'GradeClass']])'''
+        different_rows = data_normalization_notyet[data_normalization_notyet['GPA_Disc'] != data_normalization_notyet['GradeClass']]
+        st.write("Ada data GPA_Disc yang memiliki nilai yang berbeda dengan GradeClass, sedangkan GPA_Disc didiskritkan berdasarkan aturan konversi GPA ke GradeClass sebanyak `168` baris")
 
-        # Ubah ke int
-        data_normalization[numerical_features_to_discretize] = data_normalization[numerical_features_to_discretize].astype(int)
-        '''
-        st.code(code_discrit_2, language='python')
-        st.write("##### RESULT")
-        st.dataframe(data_normalization.head(5))
+        # Tampilkan hasilnya
+        st.code(code_check_anomali, language='python')
+        st.write(different_rows[['GPA_Disc', 'GradeClass']])
 
+        st.write("Maka untuk mengatasi data anomali tadi, dilakukan Perbaikan pada data tersebut dengan menimpa data GPA_Disc ke GradeClass")
+        st.code('''data_normalization['GradeClass'] = data_normalization['GPA_Disc']''', language='python')
+
+        different_rows = data_normalization[data_normalization['GPA_Disc'] != data_normalization['GradeClass']]
+        st.write("Sehingga, ketika dilakukan pengecekan ulang, tidak ada lagi data yang berbeda antara `GPA_Disc` dan `GradeClass`")
+        # Tampilkan hasilnya
+        st.code(code_check_anomali, language='python')
+        st.write(different_rows[['GPA_Disc', 'GradeClass']])
 
     if sub_selected == "Analisis Korelasi": 
         # Salin dataframe
@@ -221,7 +236,7 @@ if selected == "PREPROCESSING":
             data_encoded[col] = LabelEncoder().fit_transform(data_encoded[col])
 
         # Hitung korelasi untuk semua kolom (tanpa StudentID) dengan metode Pearson
-        correlation_matrix_all = data_encoded.drop(columns=['StudentID']).corr(method='pearson')
+        correlation_matrix_all = data_encoded.corr(method='pearson')
 
         st.write("### Analisis Korelasi All Table")
         # Visualisasi korelasi dengan heatmap
@@ -310,7 +325,7 @@ if selected == "PREPROCESSING":
 
         # Visualisasi fitur kategorikal atau biner
         def convert_binary_series(series):
-            return series.map({4: 'Ya', 0: 'Tidak'}).fillna(series)
+            return series.map({1: 'Ya', 0: 'Tidak'}).fillna(series)
 
         for feature_bin in binary_or_categorical:
             # Konversi nilai 0/1 menjadi "Ya"/"Tidak" untuk visualisasi
@@ -341,7 +356,7 @@ if selected == "PREPROCESSING":
 
             # Ubah label 0/1 ke teks
             def convert_binary(val):
-                if val == 4:
+                if val == 1:
                     return "Ya"
                 elif val == 0:
                     return "Tidak"
